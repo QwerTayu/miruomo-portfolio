@@ -1,5 +1,8 @@
 import { defineConfig } from 'astro/config';
 
+import partytown from '@astrojs/partytown';
+
 export default defineConfig({
-  site: 'https://miruomo.com/', 
+  site: 'https://miruomo.com/',
+  integrations: [partytown(),],
 });
