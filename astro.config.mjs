@@ -4,5 +4,7 @@ import partytown from '@astrojs/partytown';
 
 export default defineConfig({
   site: 'https://miruomo.com/',
-  integrations: [partytown(),],
+  integrations: [partytown({
+      config: { forward: ['dataLayer.push'] },
+    }),],
 });
