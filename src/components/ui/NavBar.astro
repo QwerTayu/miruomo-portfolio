@@ -12,7 +12,10 @@ const navItems = [
 
 <header class="navbar" id="navbar">
   <div class="navbar__inner container">
-    <a href="#hero" class="navbar__logo">miruomo.com</a>
+    <a href="#hero" class="navbar__logo">
+      miruomo.com
+      <span class="navbar__wip">🚧WIP</span>
+    </a>
 
     <nav class="navbar__nav" id="nav-menu" aria-label="メインナビゲーション">
       <ul class="navbar__links">
@@ -68,6 +71,21 @@ const navItems = [
     color: var(--color-accent);
     letter-spacing: 0.02em;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .navbar__wip {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--color-white);
+    border: 1px solid var(--color-ink-3);
+    border-radius: 3px;
+    padding: 0.15em 0.45em;
+    line-height: 1.6;
+    vertical-align: middle;
   }
 
   .navbar__nav {
