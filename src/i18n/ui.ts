@@ -36,7 +36,6 @@ const ui = {
 
     "articles.label": "ARTICLES",
     "articles.title": "Articles",
-    "articles.more": "Zenn でもっと見る →",
     "articles.zenn": "Zenn",
     "articles.qiita": "Qiita",
   },

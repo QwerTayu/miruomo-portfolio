@@ -1,31 +1,41 @@
 ---
 import { t } from '../../i18n/ui';
+import { staticArticles } from '../../data/articles';
 
 const lang = 'ja';
 
-type ZennArticle = {
-  id: number;
+type Article = {
   title: string;
-  slug: string;
-  published_at: string;
-  path: string;
+  url: string;
+  platform: string;
+  publishedAt: string;
   emoji: string;
 };
 
-let articles: ZennArticle[] = [];
+let articles: Article[] = [];
 
 try {
   const res = await fetch(
     'https://zenn.dev/api/articles?username=tayu99_make&order=latest',
   );
   const data = await res.json();
-  articles = (data.articles ?? []).slice(0, 6);
+  const zennArticles: Article[] = (data.articles ?? []).map((a: any) => ({
+    title: a.title,
+    url: `https://zenn.dev${a.path}`,
+    platform: 'Zenn',
+    publishedAt: a.published_at.slice(0, 10),
+    emoji: a.emoji,
+  }));
+  articles = [...zennArticles, ...staticArticles.map(a => ({ ...a, emoji: a.emoji ?? '📝' }))];
+  articles.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+  articles = articles.slice(0, 8);
 } catch (e) {
   console.warn('[Articles] Zenn API fetch failed:', e);
+  articles = staticArticles.map(a => ({ ...a, emoji: a.emoji ?? '📝' }));
 }
 
 function formatDate(iso: string): string {
-  return iso.slice(0, 10).replace(/-/g, '.');
+  return iso.replace(/-/g, '.');
 }
 ---
 
@@ -42,7 +52,7 @@ function formatDate(iso: string): string {
         {articles.map(article => (
           <li class="article-item fade-in">
             <a
-              href={`https://zenn.dev${article.path}`}
+              href={article.url}
               target="_blank"
               rel="noopener noreferrer"
               class="article-link"
@@ -51,8 +61,8 @@ function formatDate(iso: string): string {
               <span class="article-body">
                 <span class="article-title">{article.title}</span>
                 <span class="article-meta">
-                  <span class="article-date">{formatDate(article.published_at)}</span>
-                  <span class="article-source">{t(lang, 'articles.zenn')}</span>
+                  <span class="article-date">{formatDate(article.publishedAt)}</span>
+                  <span class="article-source">{article.platform}</span>
                 </span>
               </span>
               <span class="article-arrow" aria-hidden="true">→</span>
@@ -64,16 +74,6 @@ function formatDate(iso: string): string {
       <p class="articles-empty">記事を取得できませんでした。</p>
     )}
 
-    <div class="articles-more fade-in">
-      <a
-        href="https://zenn.dev/tayu99_make"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="btn btn--ghost-dark"
-      >
-        {t(lang, 'articles.more')}
-      </a>
-    </div>
   </div>
 </section>
 
@@ -135,7 +135,7 @@ function formatDate(iso: string): string {
 
   .article-title {
     font-size: 0.9rem;
-    color: var(--color-ink-3);
+    color: var(--color-ink);
     line-height: 1.5;
     white-space: nowrap;
     overflow: hidden;
@@ -178,8 +178,4 @@ function formatDate(iso: string): string {
     margin-bottom: 2.5rem;
   }
 
-  .articles-more {
-    display: flex;
-    justify-content: center;
-  }
 </style>
