@@ -3,7 +3,7 @@ title: "Anniversary Calendar"
 description: "大切な記念日を管理するカレンダーアプリ。Next.js + TypeScript + Firebase"
 tags: ["Next.js", "TypeScript", "Firebase"]
 github: "https://github.com/QwerTayu/anniversary-calendar"
-demo: "https://anniversary-calendar.miruomo.com"
+live: "https://anniversary-calendar.miruomo.com"
 period: "2025/12~2026/06"
 featured: true
 cover: "./figures/hero.jpg"

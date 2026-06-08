@@ -5,7 +5,7 @@
     "description": "3秒動画ログアプリ。Next.js + IndexedDB + ffmpeg.wasm",
     "tags": ["Next.js", "TypeScript", "PWA"],
     "github": "https://github.com/QwerTayu/tercet",
-    "demo": "https://tercet-cam.miruomo.com",
+    "live": "https://tercet-cam.miruomo.com",
     "period": "2026/06",
     "featured": true
   },
@@ -15,7 +15,7 @@
     "description": "miruomoのポートフォリオサイト。Astro + TypeScript",
     "tags": ["Astro", "TypeScript", "PWA"],
     "github": "https://github.com/QwerTayu/miruomo-portfolio",
-    "demo": "https://miruomo.com",
+    "live": "https://miruomo.com",
     "period": "2026/05~2026/06",
     "featured": true
   },
@@ -25,7 +25,7 @@
     "description": "兵庫県いなみのため池ミュージアムからの依頼で制作したWebゲーム。Next.js + TypeScript + PostgreSQL",
     "tags": ["Next.js", "TypeScript", "PostgreSQL"],
     "github": null,
-    "demo": "https://tameikego.com",
+    "live": "https://tameikego.com",
     "period": "2023/08~2026/03",
     "featured": true
   },
@@ -35,7 +35,7 @@
     "description": "AIと英会話練習を行えるチャットアプリ。Next.js + TypeScript + Firebase + Gemini API",
     "tags": ["Next.js", "TypeScript", "Firebase", "Gemini API"],
     "github": "https://github.com/hengin-eer/bocchi-talk",
-    "demo": "https://bocchi-talk.nitacwpl.tech",
+    "live": "https://bocchi-talk.nitacwpl.tech",
     "period": "2023/07~2023/12",
     "featured": true
   },
@@ -45,7 +45,7 @@
     "description": "大切な記念日を管理するカレンダーアプリ。Next.js + TypeScript + Firebase",
     "tags": ["Next.js", "TypeScript", "Firebase"],
     "github": "https://github.com/QwerTayu/anniversary-calendar",
-    "demo": "https://anniversary-calendar.miruomo.com",
+    "live": "https://anniversary-calendar.miruomo.com",
     "period": "2025/12~2026/06",
     "featured": true
   },
@@ -55,7 +55,7 @@
     "description": "コーヒータイマーアプリ。Next.js + TypeScript + localStorage",
     "tags": ["Next.js", "TypeScript"],
     "github": "https://github.com/QwerTayu/coffee-timer-app",
-    "demo": "https://coffee-timer-app.miruomo.com",
+    "live": "https://coffee-timer-app.miruomo.com",
     "period": "2025/12~2026/06",
     "featured": true
   },
@@ -65,7 +65,7 @@
     "description": "タイルシミュレータ。Next.js + TypeScript",
     "tags": ["Next.js", "TypeScript"],
     "github": "https://github.com/QwerTayu/tile-simulator",
-    "demo": "https://tile-simulator.miruomo.com",
+    "live": "https://tile-simulator.miruomo.com",
     "period": "2025/12~2026/06",
     "featured": true
   },
@@ -75,7 +75,7 @@
     "description": "部屋の写真を共有するアプリ。Next.js + JavaScript + Firebase",
     "tags": ["Next.js", "JavaScript", "Firebase"],
     "github": "https://github.com/QwerTayu/heya-gram",
-    "demo": "https://heya-gram.miruomo.com",
+    "live": "https://heya-gram.miruomo.com",
     "period": "2025/12~2026/06",
     "featured": true
   },
@@ -85,7 +85,7 @@
     "description": "スポーツ大会の情報管理アプリ。Next.js + TypeScript",
     "tags": ["Next.js", "TypeScript"],
     "github": "https://github.com/NITACwpl/sports-fes2023",
-    "demo": "https://sports2023.nitacwpl.tech",
+    "live": "https://sports2023.nitacwpl.tech",
     "period": "2023/09~2023/10",
     "featured": true
   },
@@ -95,7 +95,7 @@
     "description": "スポーツ大会の情報管理アプリ。Next.js + TypeScript",
     "tags": ["Next.js", "TypeScript"],
     "github": null,
-    "demo": "https://nitacwrl.tech/sports/sports",
+    "live": "https://nitacwrl.tech/sports/sports",
     "period": "2022/09~2022/10",
     "featured": true
   }

@@ -3,7 +3,7 @@ title: "miruomo.com"
 description: "miruomoのポートフォリオサイト。Astro + TypeScript"
 tags: ["Astro", "TypeScript", "PWA"]
 github: "https://github.com/QwerTayu/miruomo-portfolio"
-demo: "https://miruomo.com"
+live: "https://miruomo.com"
 period: "2026/05~2026/06"
 featured: true
 cover: "./figures/hero.jpg"

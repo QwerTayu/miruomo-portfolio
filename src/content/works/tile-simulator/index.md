@@ -3,7 +3,7 @@ title: "Tile Simulator"
 description: "タイルシミュレータ。Next.js + TypeScript"
 tags: ["Next.js", "TypeScript"]
 github: "https://github.com/QwerTayu/tile-simulator"
-demo: "https://tile-simulator.miruomo.com"
+live: "https://tile-simulator.miruomo.com"
 period: "2025/12~2026/06"
 featured: true
 cover: "./figures/hero.jpg"

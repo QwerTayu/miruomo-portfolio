@@ -3,7 +3,7 @@ title: "Heya Gram"
 description: "部屋の写真を共有するアプリ。Next.js + JavaScript + Firebase"
 tags: ["Next.js", "JavaScript", "Firebase"]
 github: "https://github.com/QwerTayu/heya-gram"
-demo: "https://heya-gram.miruomo.com"
+live: "https://heya-gram.miruomo.com"
 period: "2025/12~2026/06"
 featured: true
 cover: "./figures/hero.jpg"

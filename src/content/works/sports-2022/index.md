@@ -3,7 +3,7 @@ title: "スポーツ大会2022"
 description: "スポーツ大会の情報管理アプリ。Next.js + TypeScript"
 tags: ["Next.js", "TypeScript"]
 github: null
-demo: "https://nitacwpl.tech/sports/sports"
+live: "https://nitacwpl.tech/sports/sports"
 period: "2022/09~2022/10"
 featured: true
 cover: "./figures/hero.jpg"

@@ -1,22 +1,22 @@
 ---
-import { getCollection, render } from 'astro:content';
-import { Image } from 'astro:assets';
-import { t } from '../../i18n/ui';
+import { getCollection, render } from "astro:content";
+import { Image } from "astro:assets";
+import { t } from "../../i18n/ui";
 
-const lang = 'ja';
+const lang = "ja";
 
-const entries = await getCollection('works');
+const entries = await getCollection("works");
 entries.sort((a, b) => {
-  const aEnd = a.data.period.split('~').pop()!;
-  const bEnd = b.data.period.split('~').pop()!;
+  const aEnd = a.data.period.split("~").pop()!;
+  const bEnd = b.data.period.split("~").pop()!;
   return bEnd.localeCompare(aEnd);
 });
 
 // glob loader では id が "tercet-cam/index" 形式になるので先頭セグメントをキーとして使う
-const workKey = (id: string) => id.split('/')[0];
+const workKey = (id: string) => id.split("/")[0];
 
 const works = await Promise.all(
-  entries.map(async entry => ({
+  entries.map(async (entry) => ({
     entry,
     rendered: await render(entry),
     key: workKey(entry.id),
@@ -27,50 +27,70 @@ const works = await Promise.all(
 <section id="works" class="section section--light works">
   <div class="container">
     <header class="section-header fade-in">
-      <p class="section-label">{t(lang, 'works.label')}</p>
-      <h2 class="section-title">{t(lang, 'works.title')}</h2>
+      <p class="section-label">{t(lang, "works.label")}</p>
+      <h2 class="section-title">{t(lang, "works.title")}</h2>
       <div class="section-rule" style="background: var(--color-border)"></div>
     </header>
 
     <div class="works-grid">
-      {works.map(({ entry, key }) => (
-        <article class="work-card fade-in" data-open-work={key} role="button" tabindex="0" aria-label={`${entry.data.title} の詳細を見る`}>
-          {entry.data.cover && (
-            <div class="work-card__cover-wrap">
-              <Image
-                src={entry.data.cover}
-                alt={entry.data.title}
-                width={600}
-                height={400}
-                class="work-card__cover"
-              />
-            </div>
-          )}
-          <div class="work-card__body">
-            <p class="work-card__period">{entry.data.period}</p>
-            <h3 class="work-card__title">{entry.data.title}</h3>
-            <p class="work-card__desc">{entry.data.description}</p>
-            <div class="work-card__tags">
-              {entry.data.tags.map(tag => <span class="tag tag--light">{tag}</span>)}
-            </div>
-            <div class="work-card__footer">
-              <div class="work-card__links">
-                {entry.data.github && (
-                  <a href={entry.data.github} target="_blank" rel="noopener noreferrer" class="work-link stop-propagation">
-                    GitHub →
-                  </a>
-                )}
-                {entry.data.demo && (
-                  <a href={entry.data.demo} target="_blank" rel="noopener noreferrer" class="work-link stop-propagation">
-                    Demo →
-                  </a>
-                )}
+      {
+        works.map(({ entry, key }) => (
+          <article
+            class="work-card fade-in"
+            data-open-work={key}
+            role="button"
+            tabindex="0"
+            aria-label={`${entry.data.title} の詳細を見る`}
+          >
+            {entry.data.cover && (
+              <div class="work-card__cover-wrap">
+                <Image
+                  src={entry.data.cover}
+                  alt={entry.data.title}
+                  width={600}
+                  height={400}
+                  class="work-card__cover"
+                />
               </div>
-              <span class="work-card__hint">詳細を見る →</span>
+            )}
+            <div class="work-card__body">
+              <p class="work-card__period">{entry.data.period}</p>
+              <h3 class="work-card__title">{entry.data.title}</h3>
+              <p class="work-card__desc">{entry.data.description}</p>
+              <div class="work-card__tags">
+                {entry.data.tags.map((tag) => (
+                  <span class="tag tag--light">{tag}</span>
+                ))}
+              </div>
+              <div class="work-card__footer">
+                <div class="work-card__links">
+                  {entry.data.github && (
+                    <a
+                      href={entry.data.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="work-link stop-propagation"
+                    >
+                      GitHub →
+                    </a>
+                  )}
+                  {entry.data.live && (
+                    <a
+                      href={entry.data.live}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="work-link stop-propagation"
+                    >
+                      Live →
+                    </a>
+                  )}
+                </div>
+                <span class="work-card__hint">詳細を見る →</span>
+              </div>
             </div>
-          </div>
-        </article>
-      ))}
+          </article>
+        ))
+      }
     </div>
   </div>
 
@@ -80,46 +100,71 @@ const works = await Promise.all(
 
 <!-- Hidden pre-rendered modal content store -->
 <div class="modal-store" aria-hidden="true">
-  {works.map(({ entry, rendered: { Content }, key }) => (
-    <div id={`work-modal-${key}`}>
-      {entry.data.cover && (
-        <img
-          src={entry.data.cover.src}
-          alt={entry.data.title}
-          loading="lazy"
-          class="modal__cover"
-        />
-      )}
-      <div class="modal__header">
-        <p class="modal__period">{entry.data.period}</p>
-        <h2 class="modal__title">{entry.data.title}</h2>
-        <div class="modal__tags">
-          {entry.data.tags.map(tag => <span class="tag">{tag}</span>)}
+  {
+    works.map(({ entry, rendered: { Content }, key }) => (
+      <div id={`work-modal-${key}`}>
+        {entry.data.cover && (
+          <img
+            src={entry.data.cover.src}
+            alt={entry.data.title}
+            loading="lazy"
+            class="modal__cover"
+          />
+        )}
+        <div class="modal__header">
+          <p class="modal__period">{entry.data.period}</p>
+          <h2 class="modal__title">{entry.data.title}</h2>
+          <div class="modal__tags">
+            {entry.data.tags.map((tag) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+        </div>
+        <div class="modal__body prose">
+          <Content />
+        </div>
+        <div class="modal__links">
+          {entry.data.github && (
+            <a
+              href={entry.data.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn--ghost"
+            >
+              GitHub →
+            </a>
+          )}
+          {entry.data.live && (
+            <a
+              href={entry.data.live}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn--primary"
+            >
+              Live →
+            </a>
+          )}
         </div>
       </div>
-      <div class="modal__body prose">
-        <Content />
-      </div>
-      <div class="modal__links">
-        {entry.data.github && (
-          <a href={entry.data.github} target="_blank" rel="noopener noreferrer" class="btn btn--ghost">
-            GitHub →
-          </a>
-        )}
-        {entry.data.demo && (
-          <a href={entry.data.demo} target="_blank" rel="noopener noreferrer" class="btn btn--primary">
-            Demo →
-          </a>
-        )}
-      </div>
-    </div>
-  ))}
+    ))
+  }
 </div>
 
 <!-- Modal overlay -->
-<div class="modal-overlay" id="modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-label="作品詳細">
+<div
+  class="modal-overlay"
+  id="modal-overlay"
+  aria-hidden="true"
+  role="dialog"
+  aria-modal="true"
+  aria-label="作品詳細"
+>
   <div class="modal" id="modal">
-    <button class="modal__close" id="modal-close-btn" aria-label={t(lang, 'works.close')}>✕</button>
+    <button
+      class="modal__close"
+      id="modal-close-btn"
+      aria-label={t(lang, "works.close")}>✕</button
+    >
     <div class="modal__content" id="modal-content"></div>
   </div>
 </div>
@@ -141,7 +186,10 @@ const works = await Promise.all(
     display: flex;
     flex-direction: column;
     cursor: pointer;
-    transition: transform 0.2s var(--ease-smooth), border-color 0.2s, box-shadow 0.2s;
+    transition:
+      transform 0.2s var(--ease-smooth),
+      border-color 0.2s,
+      box-shadow 0.2s;
   }
 
   .work-card:hover {
@@ -181,14 +229,14 @@ const works = await Promise.all(
   }
 
   .work-card__period {
-    font-family: 'DM Mono', monospace;
+    font-family: "DM Mono", monospace;
     font-size: 10px;
     color: var(--color-ink-3);
     letter-spacing: 0.05em;
   }
 
   .work-card__title {
-    font-family: 'DM Serif Display', serif;
+    font-family: "DM Serif Display", serif;
     font-size: 1.2rem;
     font-weight: 400;
     color: var(--color-ink);
@@ -222,7 +270,7 @@ const works = await Promise.all(
   }
 
   .work-link {
-    font-family: 'DM Mono', monospace;
+    font-family: "DM Mono", monospace;
     font-size: 11px;
     color: var(--color-ink-3);
     transition: color 0.15s;
@@ -233,7 +281,7 @@ const works = await Promise.all(
   }
 
   .work-card__hint {
-    font-family: 'DM Mono', monospace;
+    font-family: "DM Mono", monospace;
     font-size: 11px;
     color: var(--color-ink-3);
     transition: color 0.15s;
@@ -301,7 +349,9 @@ const works = await Promise.all(
     border-radius: 50%;
     background: var(--color-ink-2);
     z-index: 10;
-    transition: color 0.15s, background 0.15s;
+    transition:
+      color 0.15s,
+      background 0.15s;
   }
 
   .modal__close:hover {
@@ -325,14 +375,14 @@ const works = await Promise.all(
   }
 
   :global(.modal__period) {
-    font-family: 'DM Mono', monospace;
+    font-family: "DM Mono", monospace;
     font-size: 11px;
     color: var(--color-ink-3);
     margin-bottom: 0.4rem;
   }
 
   :global(.modal__title) {
-    font-family: 'DM Serif Display', serif;
+    font-family: "DM Serif Display", serif;
     font-size: 1.8rem;
     font-weight: 400;
     color: var(--color-paper);
@@ -361,7 +411,7 @@ const works = await Promise.all(
 
   /* Prose styles for markdown content */
   :global(.prose h2) {
-    font-family: 'DM Serif Display', serif;
+    font-family: "DM Serif Display", serif;
     font-size: 1.2rem;
     font-weight: 400;
     color: var(--color-paper);
@@ -386,7 +436,7 @@ const works = await Promise.all(
     text-align: left;
     padding: 0.5rem 0.75rem;
     border-bottom: 1px solid var(--color-ink-2);
-    font-family: 'DM Mono', monospace;
+    font-family: "DM Mono", monospace;
     font-size: 11px;
     color: var(--color-ink-3);
     letter-spacing: 0.05em;
@@ -401,40 +451,45 @@ const works = await Promise.all(
 
   /* Mobile */
   @media (max-width: 767px) {
-    .modal-overlay { padding: 0; align-items: flex-end; }
+    .modal-overlay {
+      padding: 0;
+      align-items: flex-end;
+    }
     .modal {
       border-radius: var(--radius-lg) var(--radius-lg) 0 0;
       max-height: 90vh;
     }
-    .modal__content { padding: 1.25rem 1.25rem 2rem; }
+    .modal__content {
+      padding: 1.25rem 1.25rem 2rem;
+    }
   }
 </style>
 
 <script>
-  const overlay      = document.getElementById('modal-overlay')!;
-  const modalContent = document.getElementById('modal-content')!;
+  const overlay = document.getElementById("modal-overlay")!;
+  const modalContent = document.getElementById("modal-content")!;
 
   function openModal(workId: string) {
     const source = document.getElementById(`work-modal-${workId}`);
     if (!source) return;
     modalContent.innerHTML = source.innerHTML;
-    overlay.classList.add('is-open');
-    overlay.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+    overlay.classList.add("is-open");
+    overlay.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
   }
 
   function closeModal() {
-    overlay.classList.remove('is-open');
-    overlay.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
+    overlay.classList.remove("is-open");
+    overlay.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
   }
 
   // カード全体クリックでモーダルを開く
-  document.querySelectorAll<HTMLElement>('[data-open-work]').forEach(card => {
-    card.addEventListener('click', () => openModal(card.dataset.openWork!));
+  document.querySelectorAll<HTMLElement>("[data-open-work]").forEach((card) => {
+    card.addEventListener("click", () => openModal(card.dataset.openWork!));
     // キーボード操作（Enter / Space）でも開けるように
-    card.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') {
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         openModal(card.dataset.openWork!);
       }
@@ -442,17 +497,21 @@ const works = await Promise.all(
   });
 
   // GitHub / Demo リンクはカードのクリックに伝播させない
-  document.querySelectorAll<HTMLAnchorElement>('.stop-propagation').forEach(link => {
-    link.addEventListener('click', e => e.stopPropagation());
-  });
+  document
+    .querySelectorAll<HTMLAnchorElement>(".stop-propagation")
+    .forEach((link) => {
+      link.addEventListener("click", (e) => e.stopPropagation());
+    });
 
-  document.getElementById('modal-close-btn')!.addEventListener('click', closeModal);
+  document
+    .getElementById("modal-close-btn")!
+    .addEventListener("click", closeModal);
 
-  overlay.addEventListener('click', e => {
+  overlay.addEventListener("click", (e) => {
     if (e.target === overlay) closeModal();
   });
 
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeModal();
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeModal();
   });
 </script>

@@ -3,7 +3,7 @@ title: "TERCET"
 description: "3秒動画ログアプリ。Next.js + IndexedDB + ffmpeg.wasm"
 tags: ["Next.js", "TypeScript", "PWA"]
 github: "https://github.com/QwerTayu/tercet"
-demo: "https://tercet-cam.miruomo.com"
+live: "https://tercet-cam.miruomo.com"
 period: "2026/06"
 featured: true
 cover: "./figures/hero.jpg"

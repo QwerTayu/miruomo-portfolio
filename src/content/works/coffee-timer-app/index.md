@@ -3,7 +3,7 @@ title: "Coffee Timer App"
 description: "コーヒータイマーアプリ。Next.js + TypeScript + localStorage"
 tags: ["Next.js", "TypeScript"]
 github: "https://github.com/QwerTayu/coffee-timer-app"
-demo: "https://coffee-timer-app.miruomo.com"
+live: "https://coffee-timer-app.miruomo.com"
 period: "2025/12~2026/06"
 featured: true
 cover: "./figures/hero.jpg"

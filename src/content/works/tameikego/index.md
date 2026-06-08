@@ -3,7 +3,7 @@ title: "ため池GO!"
 description: "兵庫県いなみのため池ミュージアムからの依頼で制作したWebゲーム。Next.js + TypeScript + PostgreSQL"
 tags: ["Next.js", "TypeScript", "PostgreSQL"]
 github: null
-demo: "https://tameikego.com"
+live: "https://tameikego.com"
 period: "2023/08~2026/03"
 featured: true
 cover: "./figures/hero.jpg"

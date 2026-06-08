@@ -3,7 +3,7 @@ title: "ぼっちトーク"
 description: "AIと英会話練習を行えるチャットアプリ。Next.js + TypeScript + Firebase + Gemini API"
 tags: ["Next.js", "TypeScript", "Firebase", "Gemini API"]
 github: "https://github.com/hengin-eer/bocchi-talk"
-demo: "https://bocchi-talk.nitacwpl.tech"
+live: "https://bocchi-talk.nitacwpl.tech"
 period: "2023/07~2023/12"
 featured: true
 cover: "./figures/hero.jpg"
