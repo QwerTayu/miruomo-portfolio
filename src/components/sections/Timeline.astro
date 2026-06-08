@@ -1,0 +1,164 @@
+---
+import { t } from '../../i18n/ui';
+import { timeline } from '../../data/timeline';
+
+const lang = 'ja';
+
+function formatDate(date: string): string {
+  const [year, month] = date.split('-');
+  return `${year}.${month}`;
+}
+
+function formatPeriod(date: string, dateEnd?: string): string {
+  if (!dateEnd) return formatDate(date);
+  const [startYear] = date.split('-');
+  const [endYear, endMonth] = dateEnd.split('-');
+  return startYear === endYear
+    ? `${formatDate(date)}〜${endMonth}`
+    : `${formatDate(date)}〜${formatDate(dateEnd)}`;
+}
+---
+
+<section id="timeline" class="section section--light timeline">
+  <div class="container">
+    <header class="section-header fade-in">
+      <p class="section-label">{t(lang, 'timeline.label')}</p>
+      <h2 class="section-title">{t(lang, 'timeline.title')}</h2>
+      <div class="section-rule"></div>
+    </header>
+
+    <div class="timeline-track">
+      <div class="timeline-line" aria-hidden="true"></div>
+
+      {timeline.map(entry => (
+        <div class={`timeline-item timeline-item--${entry.side} fade-in`}>
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-card">
+            <p class="timeline-card__date">{formatPeriod(entry.date, entry.dateEnd)}</p>
+            <p class="timeline-card__title">{entry.title}</p>
+            {entry.detail && (
+              <p class="timeline-card__detail">{entry.detail}</p>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .timeline {
+    /* background inherited from section--light */
+  }
+
+  .timeline-track {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    padding: 0 0 1rem;
+  }
+
+  .timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--color-border);
+    transform: translateX(-50%);
+  }
+
+  .timeline-item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+
+  /* Dot */
+  .timeline-dot {
+    position: absolute;
+    left: 50%;
+    top: 0.9rem;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    transform: translateX(-50%);
+    box-shadow: 0 0 0 3px var(--color-paper), 0 0 0 4px var(--color-border);
+    z-index: 1;
+  }
+
+  /* Card */
+  .timeline-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0.9rem 1.1rem;
+    max-width: 320px;
+    transition: border-color 0.2s;
+  }
+
+  .timeline-card:hover {
+    border-color: var(--color-accent);
+  }
+
+  .timeline-card__date {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--color-accent);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.35rem;
+  }
+
+  .timeline-card__title {
+    font-size: 0.9rem;
+    color: var(--color-ink);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .timeline-card__detail {
+    font-size: 0.78rem;
+    color: var(--color-ink-3);
+    margin-top: 0.35rem;
+    line-height: 1.5;
+  }
+
+  /* Left item: card on left side */
+  .timeline-item--left .timeline-card {
+    grid-column: 1;
+    margin-left: auto;
+    margin-right: 2rem;
+  }
+
+  /* Right item: card on right side */
+  .timeline-item--right .timeline-card {
+    grid-column: 2;
+    margin-left: 2rem;
+  }
+
+  /* Mobile — single column */
+  @media (max-width: 767px) {
+    .timeline-line {
+      left: 16px;
+    }
+
+    .timeline-item {
+      grid-template-columns: 1fr;
+      padding-left: 3rem;
+    }
+
+    .timeline-dot {
+      left: 16px;
+    }
+
+    .timeline-item--left .timeline-card,
+    .timeline-item--right .timeline-card {
+      grid-column: 1;
+      margin: 0;
+      max-width: 100%;
+    }
+  }
+</style>

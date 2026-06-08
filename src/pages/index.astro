@@ -1,225 +1,44 @@
 ---
-// src/pages/index.astro
-import Layout from "../layouts/layout.astro";
-
-const links = [
-  {
-    name: "GitHub",
-    url: "https://github.com/QwerTayu",
-    icon: "github.svg",
-    id: "QwerTayu",
-  },
-  { name: "X (Twitter)", url: "https://x.com/tayu99_qwert", icon: "x.png" },
-  {
-    name: "Instagram",
-    url: "https://instagram.com/_qwert0916",
-    icon: "instagram.svg",
-  },
-  { name: "Zenn", url: "https://zenn.dev/tayu99_make", icon: "zenn.svg" },
-  { name: "Qiita", url: "https://qiita.com/QwerTayu", icon: "qiita.png" },
-  { name: "note", url: "https://note.com/tayu99_", icon: "note.svg" },
-];
+import Layout from '../layouts/layout.astro';
+import NavBar from '../components/ui/NavBar.astro';
+import Hero from '../components/sections/Hero.astro';
+import About from '../components/sections/About.astro';
+import Works from '../components/sections/Works.astro';
+import Timeline from '../components/sections/Timeline.astro';
+import Articles from '../components/sections/Articles.astro';
 ---
 
-<Layout title="miruomo.com | Under Construction">
-  <main class="container">
-    <p class="status">🚧 Under Construction 🚧</p>
-
-    <section class="profile-card">
-      <div class="profile-header">
-        <img class="avatar" src="/profile.jpg" alt="プロフィール画像" />
-        <div class="profile-info">
-          <h1>miruomo.com</h1>
-          <p class="role">Frontend Engineer / Photographer</p>
-          <p class="description">現在、ポートフォリオサイトを制作中です。</p>
-        </div>
-      </div>
-
-      <div class="links-container">
-        {
-          links.map((link) => (
-            <a
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="link-card"
-              data-service={link.name}
-            >
-              <img
-                class="service-logo"
-                src={`/icons/${link.icon}`}
-                alt={link.name}
-              />
-              {link.name === "GitHub" && link.id ? (
-                <span class="github-id">{link.id}</span>
-              ) : null}
-            </a>
-          ))
-        }
-      </div>
-    </section>
+<Layout title="miruomo.com" description="Software Engineer — portfolio of miruomo">
+  <NavBar />
+  <main>
+    <Hero />
+    <About />
+    <Works />
+    <Timeline />
+    <Articles />
   </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="footer__copy">© 2026 miruomo.com</p>
+    </div>
+  </footer>
 </Layout>
 
+<script>
+  import '../scripts/scroll-animation.ts';
+</script>
+
 <style>
-  :root {
-    --bg-color: #f8f9fa;
-    --text-color: #212529;
-    --accent-color: #495057;
-    --card-bg: #ffffff;
-    --card-hover: #e9ecef;
+  .footer {
+    padding: 2rem 0;
+    border-top: 1px solid var(--color-ink-2);
   }
 
-  :global(body) {
-    font-family:
-      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
-      Arial, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-  }
-
-  .container {
+  .footer__copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--color-ink-3);
     text-align: center;
-    padding: 2rem;
-    max-width: 460px;
-    width: 100%;
-  }
-
-  .status {
-    font-weight: bold;
-    color: #f39c12;
-    margin-bottom: 1.5rem;
-  }
-
-  .profile-card {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    align-items: stretch;
-    background: linear-gradient(180deg, #ffffff 0%, #fbfbfb 100%);
-    border: 1px solid #e9ecef;
-    border-radius: 12px;
-    padding: 1rem;
-    box-shadow: 0 6px 18px rgba(33, 37, 41, 0.06);
-    margin-bottom: 1.5rem;
-    margin-top: 0.5rem;
-  }
-
-  .profile-header {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    width: 100%;
-  }
-
-  .avatar {
-    width: 96px;
-    height: 96px;
-    border-radius: 12px;
-    object-fit: cover;
-    border: 1px solid #dee2e6;
-    background: #fff;
-  }
-
-  .profile-info {
-    text-align: left;
-    flex: 1;
-  }
-
-  .profile-info h1 {
-    margin: 0;
-    font-size: 1.25rem;
-  }
-
-  .role {
-    margin: 0.25rem 0 0.5rem 0;
-    font-size: 0.85rem;
-    color: var(--accent-color);
-    font-weight: 600;
-  }
-
-  .description {
-    font-size: 0.9rem;
-    color: #6c757d;
-    margin: 0;
-    line-height: 1.4;
-  }
-
-  .links-container {
-    display: flex;
-    flex-direction: row;
-    gap: 0.5rem;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    background: transparent;
-    padding: 0;
-  }
-
-  .link-card {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.2rem;
-    min-width: 36px;
-    height: 36px;
-    background-color: transparent;
-    border: none;
-    border-radius: 6px;
-    text-decoration: none;
-    color: var(--text-color);
-    font-weight: 600;
-    transition: transform 0.12s;
-  }
-
-  .link-card:hover {
-    transform: translateY(-3px);
-  }
-
-  .service-logo {
-    width: 28px;
-    height: 28px;
-    object-fit: contain;
-    filter: none;
-  }
-
-  .link-card[data-service="note"] {
-    position: relative;
-  }
-
-  .link-card[data-service="note"]::after {
-    content: "";
-    position: absolute;
-    width: 28px;
-    height: 28px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    background: transparent;
-    z-index: 2;
-    pointer-events: none;
-  }
-
-  .link-card[data-service="note"] .service-logo {
-    width: 24px;
-    height: 24px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .github-id {
-    margin-left: 0.6rem;
-    font-size: 0.9rem;
-    color: var(--accent-color);
-    font-weight: 700;
-  }
-
-  .name {
-    flex-grow: 1;
-    text-align: left;
   }
 </style>

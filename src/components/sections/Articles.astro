@@ -1,0 +1,181 @@
+---
+import { t } from '../../i18n/ui';
+import { staticArticles } from '../../data/articles';
+
+const lang = 'ja';
+
+type Article = {
+  title: string;
+  url: string;
+  platform: string;
+  publishedAt: string;
+  emoji: string;
+};
+
+let articles: Article[] = [];
+
+try {
+  const res = await fetch(
+    'https://zenn.dev/api/articles?username=tayu99_make&order=latest',
+  );
+  const data = await res.json();
+  const zennArticles: Article[] = (data.articles ?? []).map((a: any) => ({
+    title: a.title,
+    url: `https://zenn.dev${a.path}`,
+    platform: 'Zenn',
+    publishedAt: a.published_at.slice(0, 10),
+    emoji: a.emoji,
+  }));
+  articles = [...zennArticles, ...staticArticles.map(a => ({ ...a, emoji: a.emoji ?? '📝' }))];
+  articles.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+  articles = articles.slice(0, 8);
+} catch (e) {
+  console.warn('[Articles] Zenn API fetch failed:', e);
+  articles = staticArticles.map(a => ({ ...a, emoji: a.emoji ?? '📝' }));
+}
+
+function formatDate(iso: string): string {
+  return iso.replace(/-/g, '.');
+}
+---
+
+<section id="articles" class="section section--light articles">
+  <div class="container">
+    <header class="section-header fade-in">
+      <p class="section-label">{t(lang, 'articles.label')}</p>
+      <h2 class="section-title">{t(lang, 'articles.title')}</h2>
+      <div class="section-rule"></div>
+    </header>
+
+    {articles.length > 0 ? (
+      <ul class="article-list">
+        {articles.map(article => (
+          <li class="article-item fade-in">
+            <a
+              href={article.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="article-link"
+            >
+              <span class="article-emoji" aria-hidden="true">{article.emoji}</span>
+              <span class="article-body">
+                <span class="article-title">{article.title}</span>
+                <span class="article-meta">
+                  <span class="article-date">{formatDate(article.publishedAt)}</span>
+                  <span class="article-source">{article.platform}</span>
+                </span>
+              </span>
+              <span class="article-arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="articles-empty">記事を取得できませんでした。</p>
+    )}
+
+  </div>
+</section>
+
+<style>
+  .articles {
+    /* background inherited from section--light */
+  }
+
+  .article-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 2.5rem;
+  }
+
+  .article-item {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .article-item:first-child {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .article-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 0.25rem;
+    transition: background 0.15s;
+  }
+
+  .article-link:hover {
+    background: rgba(0, 0, 0, 0.03);
+  }
+
+  .article-link:hover .article-title {
+    color: var(--color-ink);
+  }
+
+  .article-link:hover .article-arrow {
+    transform: translateX(4px);
+    color: var(--color-accent);
+  }
+
+  .article-emoji {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    width: 2rem;
+    text-align: center;
+  }
+
+  .article-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+
+  .article-title {
+    font-size: 0.9rem;
+    color: var(--color-ink);
+    line-height: 1.5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.15s;
+  }
+
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .article-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--color-ink-3);
+  }
+
+  .article-source {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 0.1rem 0.4rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-paper-2);
+    color: var(--color-ink-2);
+  }
+
+  .article-arrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--color-ink-3);
+    flex-shrink: 0;
+    transition: transform 0.2s var(--ease-smooth), color 0.15s;
+  }
+
+  .articles-empty {
+    font-size: 0.85rem;
+    color: var(--color-ink-3);
+    margin-bottom: 2.5rem;
+  }
+
+</style>

@@ -1,6 +1,17 @@
 ---
-const { title = "miruomo.com | Under Construction" } = Astro.props;
-const ga4Id = import.meta.env.PUBLIC_GA4_ID;
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'miruomo.com',
+  description = 'Software Engineer / Photographer — portfolio of miruomo',
+} = Astro.props;
+
+const ga4Id     = import.meta.env.PUBLIC_GA4_ID;
 const clarityId = import.meta.env.PUBLIC_CLARITY_ID;
 ---
 
@@ -8,49 +19,47 @@ const clarityId = import.meta.env.PUBLIC_CLARITY_ID;
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <title>{title}</title>
 
-    {
-      ga4Id && (
-        <script
-          type="text/partytown"
-          src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`}></script>
-      )
-    }
-    {
-      ga4Id && (
-        <script type="text/partytown" define:vars={{ ga4Id }}>
-          window.dataLayer = window.dataLayer || [];
-          function gtag() {
-            dataLayer.push(arguments);
-          }
-          gtag("js", new Date());
-          gtag("config", ga4Id);
-        </script>
-      )
-    }
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Noto+Sans+JP:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
 
-    {
-      clarityId && (
-        <script type="text/partytown" define:vars={{ clarityId }}>
-          (function (c, l, a, r, i, t, y) {
-            c[a] =
-              c[a] ||
-              function () {
-                (c[a].q = c[a].q || []).push(arguments);
-              };
-            t = l.createElement(r);
-            t.async = 1;
-            t.src = "https://www.clarity.ms/tag/" + i;
-            y = l.getElementsByTagName(r)[0];
-            y.parentNode.insertBefore(t, y);
-          })(window, document, "clarity", "script", clarityId);
-        </script>
-      )
-    }
+    <!-- Google Analytics -->
+    {ga4Id && (
+      <script
+        type="text/partytown"
+        src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`}
+      />
+    )}
+    {ga4Id && (
+      <script type="text/partytown" define:vars={{ ga4Id }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', ga4Id);
+      </script>
+    )}
+
+    <!-- Microsoft Clarity -->
+    {clarityId && (
+      <script type="text/partytown" define:vars={{ clarityId }}>
+        (function(c,l,a,r,i,t,y){
+          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+          t=l.createElement(r);t.async=1;t.src='https://www.clarity.ms/tag/'+i;
+          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window,document,'clarity','script',clarityId);
+      </script>
+    )}
   </head>
   <body>
     <slot />

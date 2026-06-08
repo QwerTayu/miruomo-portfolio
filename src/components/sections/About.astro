@@ -1,0 +1,283 @@
+---
+import { t } from '../../i18n/ui';
+import { manualSkills, type Skill } from '../../data/skills';
+import { socialLinks } from '../../data/links';
+import { Image } from 'astro:assets';
+import avatarPhoto from '../../assets/about/avatar_photo.png';
+import avatarNotion from '../../assets/about/avatar_notion.png';
+
+const lang = 'ja';
+
+// GitHub API — build-time fetch
+type GithubSkill = { name: string; source: 'github' };
+let githubSkills: GithubSkill[] = [];
+
+try {
+  const token = import.meta.env.GITHUB_LANG_TOKEN;
+  const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+
+  const repos: any[] = await fetch(
+    'https://api.github.com/users/QwerTayu/repos?per_page=100&type=owner',
+    { headers },
+  ).then(r => r.json());
+
+  if (Array.isArray(repos)) {
+    const langBytes: Record<string, number> = {};
+
+    await Promise.all(
+      repos
+        .filter(r => !r.fork && r.language)
+        .map(async repo => {
+          try {
+            const langs: Record<string, number> = await fetch(
+              repo.languages_url,
+              { headers },
+            ).then(r => r.json());
+            for (const [lang, bytes] of Object.entries(langs)) {
+              langBytes[lang] = (langBytes[lang] ?? 0) + bytes;
+            }
+          } catch { /* skip repo on error */ }
+        }),
+    );
+
+    if (Object.keys(langBytes).length > 0) {
+      githubSkills = Object.entries(langBytes)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 10)
+        .map(([name]) => ({ name, source: 'github' as const }));
+    }
+  }
+} catch (e) {
+  console.warn('[About] GitHub API fetch failed:', e);
+}
+
+const allSkills: Skill[] = [
+  ...githubSkills,
+  ...manualSkills,
+];
+
+const interests = ['Photography', 'Eating', 'Working Abroad', 'AtCoder'];
+
+---
+
+<section id="about" class="section section--light about">
+  <div class="container">
+    <header class="section-header fade-in">
+      <p class="section-label">{t(lang, 'about.label')}</p>
+      <h2 class="section-title">{t(lang, 'about.title')}</h2>
+      <div class="section-rule"></div>
+    </header>
+
+    <div class="about__grid">
+      <!-- Avatar -->
+      <div class="about__avatar-wrap fade-in">
+        <div class="avatar-flip" id="avatar-flip" aria-label="プロフィール写真（クリックで切り替え）">
+          <div class="avatar-flip__inner">
+            <div class="avatar-flip__face avatar-flip__front">
+              <Image src={avatarPhoto} alt="プロフィール写真" class="about__avatar" width={240} height={240} />
+            </div>
+            <div class="avatar-flip__face avatar-flip__back">
+              <Image src={avatarNotion} alt="プロフィール写真（Notion風）" class="about__avatar" width={240} height={240} />
+            </div>
+          </div>
+        </div>
+        <p class="about__name">miruomo.com</p>
+        <p class="about__affil">明石高専 → 長岡技科大</p>
+        <div class="about__social">
+          {socialLinks.map(link => (
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="about__social-link"
+              aria-label={link.name}
+              data-service={link.name}
+            >
+              <img src={`/icons/${link.icon}`} alt={link.name} class="about__social-icon" width="20" height="20" />
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Skills + Interests -->
+      <div class="about__content">
+        <div class="about__skills fade-in">
+          <p class="about__subtitle">{t(lang, 'about.skills')}</p>
+          <div class="skills">
+            {allSkills.map(skill => <span class="tag tag--light">{skill.name}</span>)}
+          </div>
+        </div>
+
+        <div class="about__interests fade-in">
+          <p class="about__subtitle">{t(lang, 'about.interests')}</p>
+          <div class="interests">
+            {interests.map(i => <span class="tag">{i}</span>)}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    /* background inherited from section--light */
+  }
+
+  .about__grid {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  /* Avatar column */
+  /* Flip card */
+  .avatar-flip {
+    width: 100%;
+    perspective: 800px;
+    cursor: pointer;
+  }
+
+  .avatar-flip__inner {
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s var(--ease-smooth);
+  }
+
+  .avatar-flip__face {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .avatar-flip__back {
+    position: absolute;
+    inset: 0;
+    transform: rotateY(180deg);
+  }
+
+  /* PC: hover で回転 */
+  @media (hover: hover) {
+    .avatar-flip:hover .avatar-flip__inner {
+      transform: rotateY(180deg);
+    }
+  }
+
+  /* SP: クリックで .is-flipped を付与 */
+  .avatar-flip__inner.is-flipped {
+    transform: rotateY(180deg);
+  }
+
+  .about__avatar {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    display: block;
+  }
+
+  .about__name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    margin-top: 1rem;
+    color: var(--color-ink);
+  }
+
+  .about__affil {
+    font-size: 0.8rem;
+    color: var(--color-ink-3);
+    margin-top: 0.3rem;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .about__social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .about__social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-border);
+    transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  }
+
+  .about__social-link:hover {
+    background: var(--color-border);
+    border-color: var(--color-ink-3);
+    transform: translateY(-2px);
+  }
+
+  .about__social-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+  }
+
+  .about__social-link[data-service="note"] .about__social-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Skills column */
+  .about__subtitle {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--color-accent);
+    margin-bottom: 1.25rem;
+  }
+
+  .skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .interests {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  /* Mobile */
+  @media (max-width: 767px) {
+    .about__grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .about__avatar-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .avatar-flip {
+      width: 140px;
+    }
+
+    .about__avatar {
+      width: 140px;
+      height: auto;
+    }
+  }
+</style>
+
+<script>
+  // タッチデバイスではクリックで .is-flipped をトグル
+  const flip = document.getElementById('avatar-flip');
+  if (flip && !window.matchMedia('(hover: hover)').matches) {
+    flip.addEventListener('click', () => {
+      flip.querySelector('.avatar-flip__inner')?.classList.toggle('is-flipped');
+    });
+  }
+</script>
