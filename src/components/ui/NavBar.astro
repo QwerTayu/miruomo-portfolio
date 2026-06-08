@@ -1,0 +1,232 @@
+---
+import { t } from '../../i18n/ui';
+const lang = 'ja';
+
+const navItems = [
+  { key: 'nav.hero',     href: '#hero'     },
+  { key: 'nav.about',    href: '#about'    },
+  { key: 'nav.works',    href: '#works'    },
+  { key: 'nav.timeline', href: '#timeline' },
+  { key: 'nav.articles', href: '#articles' },
+] as const;
+---
+
+<header class="navbar" id="navbar">
+  <div class="navbar__inner container">
+    <a href="#hero" class="navbar__logo">miruomo.com</a>
+
+    <nav class="navbar__nav" id="nav-menu" aria-label="メインナビゲーション">
+      <ul class="navbar__links">
+        {navItems.map(item => (
+          <li>
+            <a
+              href={item.href}
+              class="navbar__link"
+              data-section={item.href.slice(1)}
+            >
+              {t(lang, item.key)}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <span class="navbar__lang">JA</span>
+    </nav>
+
+    <button class="navbar__hamburger" id="hamburger" aria-label="メニューを開く" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</header>
+
+<style>
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: var(--navbar-h);
+    background: transparent;
+    transition: background 0.3s var(--ease-smooth), backdrop-filter 0.3s;
+  }
+
+  .navbar.scrolled {
+    background: rgba(20, 18, 16, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .navbar__inner {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .navbar__logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: var(--color-accent);
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+  }
+
+  .navbar__nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .navbar__links {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+  }
+
+  .navbar__link {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    color: var(--color-ink-3);
+    position: relative;
+    padding-bottom: 2px;
+    transition: color 0.2s;
+  }
+
+  .navbar__link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1.5px;
+    background: var(--color-accent);
+    transition: width 0.25s var(--ease-smooth);
+  }
+
+  .navbar__link:hover,
+  .navbar__link.active {
+    color: var(--color-paper);
+  }
+
+  .navbar__link.active::after {
+    width: 100%;
+  }
+
+  .navbar__lang {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--color-ink-3);
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--color-ink-2);
+    border-radius: var(--radius-sm);
+    cursor: default;
+  }
+
+  .navbar__hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 28px;
+    height: 28px;
+    padding: 2px;
+  }
+
+  .navbar__hamburger span {
+    display: block;
+    width: 100%;
+    height: 1.5px;
+    background: var(--color-paper);
+    border-radius: 1px;
+    transition: transform 0.3s var(--ease-smooth), opacity 0.3s;
+    transform-origin: center;
+  }
+
+  .navbar__hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .navbar__hamburger.open span:nth-child(2) { opacity: 0; }
+  .navbar__hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  @media (max-width: 767px) {
+    .navbar__hamburger { display: flex; }
+
+    .navbar__nav {
+      position: fixed;
+      top: var(--navbar-h);
+      left: 0;
+      right: 0;
+      background: rgba(20, 18, 16, 0.97);
+      backdrop-filter: blur(12px);
+      padding: 1.5rem 1.25rem 2rem;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.25rem;
+      transform: translateY(-110%);
+      opacity: 0;
+      transition: transform 0.35s var(--ease-smooth), opacity 0.35s;
+      pointer-events: none;
+    }
+
+    .navbar__nav.open {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .navbar__links {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.25rem;
+      width: 100%;
+    }
+
+    .navbar__link {
+      font-size: 14px;
+    }
+  }
+</style>
+
+<script>
+  const navbar    = document.getElementById('navbar')!;
+  const hamburger = document.getElementById('hamburger')!;
+  const navMenu   = document.getElementById('nav-menu')!;
+
+  // Scroll → background
+  function onScroll() {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Hamburger
+  hamburger.addEventListener('click', () => {
+    const isOpen = hamburger.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', String(isOpen));
+    navMenu.classList.toggle('open', isOpen);
+  });
+
+  // Close mobile menu on link click
+  document.querySelectorAll('.navbar__link').forEach(link => {
+    link.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      navMenu.classList.remove('open');
+    });
+  });
+
+  // Active section detection — scroll-position based (reliable for tall sections)
+  const sections = Array.from(document.querySelectorAll<HTMLElement>('section[id]'));
+  const navLinks = Array.from(document.querySelectorAll<HTMLElement>('[data-section]'));
+
+  function updateActive() {
+    const offset = 80 + 32; // navbar height + buffer
+    let current = sections[0];
+    for (const s of sections) {
+      if (window.scrollY + offset >= s.offsetTop) current = s;
+    }
+    navLinks.forEach(l => l.classList.toggle('active', l.dataset.section === current?.id));
+  }
+
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+</script>

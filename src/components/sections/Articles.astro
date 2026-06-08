@@ -1,0 +1,185 @@
+---
+import { t } from '../../i18n/ui';
+
+const lang = 'ja';
+
+type ZennArticle = {
+  id: number;
+  title: string;
+  slug: string;
+  published_at: string;
+  path: string;
+  emoji: string;
+};
+
+let articles: ZennArticle[] = [];
+
+try {
+  const res = await fetch(
+    'https://zenn.dev/api/articles?username=tayu99_make&order=latest',
+  );
+  const data = await res.json();
+  articles = (data.articles ?? []).slice(0, 6);
+} catch (e) {
+  console.warn('[Articles] Zenn API fetch failed:', e);
+}
+
+function formatDate(iso: string): string {
+  return iso.slice(0, 10).replace(/-/g, '.');
+}
+---
+
+<section id="articles" class="section articles">
+  <div class="container">
+    <header class="section-header fade-in">
+      <p class="section-label">{t(lang, 'articles.label')}</p>
+      <h2 class="section-title">{t(lang, 'articles.title')}</h2>
+      <div class="section-rule"></div>
+    </header>
+
+    {articles.length > 0 ? (
+      <ul class="article-list">
+        {articles.map(article => (
+          <li class="article-item fade-in">
+            <a
+              href={`https://zenn.dev${article.path}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="article-link"
+            >
+              <span class="article-emoji" aria-hidden="true">{article.emoji}</span>
+              <span class="article-body">
+                <span class="article-title">{article.title}</span>
+                <span class="article-meta">
+                  <span class="article-date">{formatDate(article.published_at)}</span>
+                  <span class="article-source">{t(lang, 'articles.zenn')}</span>
+                </span>
+              </span>
+              <span class="article-arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="articles-empty">記事を取得できませんでした。</p>
+    )}
+
+    <div class="articles-more fade-in">
+      <a
+        href="https://zenn.dev/tayu99_make"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn--ghost"
+      >
+        {t(lang, 'articles.more')}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .articles {
+    background-color: var(--color-ink);
+  }
+
+  .article-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 2.5rem;
+  }
+
+  .article-item {
+    border-bottom: 1px solid var(--color-ink-2);
+  }
+
+  .article-item:first-child {
+    border-top: 1px solid var(--color-ink-2);
+  }
+
+  .article-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 0.25rem;
+    transition: background 0.15s;
+  }
+
+  .article-link:hover {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .article-link:hover .article-title {
+    color: var(--color-paper);
+  }
+
+  .article-link:hover .article-arrow {
+    transform: translateX(4px);
+    color: var(--color-accent);
+  }
+
+  .article-emoji {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    width: 2rem;
+    text-align: center;
+  }
+
+  .article-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+
+  .article-title {
+    font-size: 0.9rem;
+    color: var(--color-ink-3);
+    line-height: 1.5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.15s;
+  }
+
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .article-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--color-ink-3);
+  }
+
+  .article-source {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 0.1rem 0.4rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-ink-2);
+    color: var(--color-ink-3);
+  }
+
+  .article-arrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--color-ink-3);
+    flex-shrink: 0;
+    transition: transform 0.2s var(--ease-smooth), color 0.15s;
+  }
+
+  .articles-empty {
+    font-size: 0.85rem;
+    color: var(--color-ink-3);
+    margin-bottom: 2.5rem;
+  }
+
+  .articles-more {
+    display: flex;
+    justify-content: center;
+  }
+</style>
