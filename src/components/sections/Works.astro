@@ -159,15 +159,13 @@ const works = await Promise.all(
   aria-modal="true"
   aria-label="作品詳細"
 >
+  <p class="modal-overlay__hint" aria-hidden="true">tap here to close</p>
   <div class="modal" id="modal">
-    <button
-      class="modal__close"
-      id="modal-close-btn"
-      aria-label={t(lang, "works.close")}>✕</button
-    >
     <div class="modal__content" id="modal-content"></div>
   </div>
 </div>
+
+<button class="modal__close-fab" id="modal-close-fab" aria-label={t(lang, "works.close")}>✕</button>
 
 <style>
   /* ── Works grid ───────────────────────────── */
@@ -325,7 +323,10 @@ const works = await Promise.all(
     width: 100%;
     max-width: 720px;
     max-height: 88vh;
-    overflow-y: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding-top: 1.5rem;
     transform: translateY(20px);
     transition: transform 0.3s var(--ease-spring);
   }
@@ -334,33 +335,10 @@ const works = await Promise.all(
     transform: translateY(0);
   }
 
-  .modal__close {
-    position: sticky;
-    top: 0;
-    float: right;
-    margin: 1rem 1rem 0 0;
-    font-size: 1.1rem;
-    color: var(--color-ink-3);
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: var(--color-ink-2);
-    z-index: 10;
-    transition:
-      color 0.15s,
-      background 0.15s;
-  }
-
-  .modal__close:hover {
-    color: var(--color-paper);
-    background: var(--color-ink-3);
-  }
-
-  .modal__content {
-    padding: 1.5rem 2rem 2rem;
+  :global(.modal__content) {
+    overflow-y: auto;
+    flex: 1;
+    padding: 0 2rem 2rem;
   }
 
   /* ── Modal content styles ───────────────── */
@@ -449,18 +427,66 @@ const works = await Promise.all(
     font-size: 0.85rem;
   }
 
+  @keyframes float-hint {
+    0%, 100% { transform: translateX(-50%) translateY(4); }
+    50%       { transform: translateX(-50%) translateY(-12px); }
+  }
+
+  /* ── Close FAB (mobile only) ────────────── */
+  .modal-overlay__hint {
+    position: absolute;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: "DM Mono", monospace;
+    font-size: 16px;
+    letter-spacing: 0.1em;
+    color: rgba(247, 244, 239, 0.678);
+    white-space: nowrap;
+    pointer-events: none;
+    animation: float-hint 2.4s ease-in-out infinite;
+  }
+
+  .modal__close-fab {
+    display: none;
+  }
+
   /* Mobile */
   @media (max-width: 767px) {
     .modal-overlay {
       padding: 0;
       align-items: flex-end;
+      flex-direction: column;
+      justify-content: flex-end;
     }
     .modal {
       border-radius: var(--radius-lg) var(--radius-lg) 0 0;
       max-height: 90vh;
     }
-    .modal__content {
-      padding: 1.25rem 1.25rem 2rem;
+    :global(.modal__content) {
+      padding: 0 1.25rem 2rem;
+    }
+    .modal__close-fab {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--color-ink-2);
+      color: var(--color-paper);
+      font-size: 1rem;
+      z-index: 300;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s var(--ease-smooth);
+    }
+    .modal__close-fab.is-open {
+      opacity: 1;
+      pointer-events: auto;
     }
   }
 </style>
@@ -468,26 +494,63 @@ const works = await Promise.all(
 <script>
   const overlay = document.getElementById("modal-overlay")!;
   const modalContent = document.getElementById("modal-content")!;
+  const closeFab = document.getElementById("modal-close-fab");
 
-  function openModal(workId: string) {
+  function showModal(workId: string) {
     const source = document.getElementById(`work-modal-${workId}`);
     if (!source) return;
     modalContent.innerHTML = source.innerHTML;
     overlay.classList.add("is-open");
     overlay.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
+    closeFab?.classList.add("is-open");
   }
 
-  function closeModal() {
+  function hideModal() {
     overlay.classList.remove("is-open");
     overlay.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
+    closeFab?.classList.remove("is-open");
   }
+
+  function openModal(workId: string) {
+    const url = new URL(location.href);
+    url.searchParams.set("work", workId);
+    history.pushState({ work: workId }, "", url);
+    showModal(workId);
+  }
+
+  function closeModal() {
+    const url = new URL(location.href);
+    url.searchParams.delete("work");
+    history.pushState({}, "", url);
+    hideModal();
+  }
+
+  // URL の ?work= に応じて表示を同期
+  function syncFromUrl() {
+    const workId = new URLSearchParams(location.search).get("work");
+    if (workId && document.getElementById(`work-modal-${workId}`)) {
+      showModal(workId);
+    } else {
+      if (workId) {
+        const url = new URL(location.href);
+        url.searchParams.delete("work");
+        history.replaceState({}, "", url);
+      }
+      hideModal();
+    }
+  }
+
+  // ブラウザの戻る / 進む
+  window.addEventListener("popstate", syncFromUrl);
+
+  // 初期表示
+  syncFromUrl();
 
   // カード全体クリックでモーダルを開く
   document.querySelectorAll<HTMLElement>("[data-open-work]").forEach((card) => {
     card.addEventListener("click", () => openModal(card.dataset.openWork!));
-    // キーボード操作（Enter / Space）でも開けるように
     card.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
@@ -503,9 +566,7 @@ const works = await Promise.all(
       link.addEventListener("click", (e) => e.stopPropagation());
     });
 
-  document
-    .getElementById("modal-close-btn")!
-    .addEventListener("click", closeModal);
+  closeFab?.addEventListener("click", closeModal);
 
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) closeModal();
