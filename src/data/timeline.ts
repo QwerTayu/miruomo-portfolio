@@ -73,4 +73,11 @@ export const timeline: TimelineEntry[] = [
     type: 'education',
     side: 'left',
   },
+  {
+    date: '2026-04',
+    title: '学生団体NUTMEG 入局',
+    detail: null,
+    type: 'activity',
+    side: 'right',
+  },
 ];
