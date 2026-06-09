@@ -13,6 +13,7 @@ const works = defineCollection({
       period: z.string(),
       order: z.number(),
       cover: image().optional(),
+      status: z.enum(["hidden", "editing", "wip", "published"]).default("published"),
     }),
 });
 

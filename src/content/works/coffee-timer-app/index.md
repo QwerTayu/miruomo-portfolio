@@ -7,6 +7,7 @@ live: "https://coffee-timer-web-app.miruomo.com"
 period: "2024/10"
 order: 1
 cover: "./figures/hero.jpg"
+status: published
 ---
 
 ## サービス概要

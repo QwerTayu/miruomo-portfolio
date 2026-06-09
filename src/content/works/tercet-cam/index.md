@@ -7,6 +7,7 @@ live: "https://tercet-cam.miruomo.com"
 period: "2026/06〜"
 order: 1
 cover: "./figures/hero.jpg"
+status: wip
 ---
 
 ## サービス概要

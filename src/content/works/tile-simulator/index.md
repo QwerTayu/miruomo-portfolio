@@ -7,6 +7,7 @@ live: "https://tile-simulator.miruomo.com"
 period: "2025/12~2026/06"
 order: 0
 cover: "./figures/hero.jpg"
+status: editing
 ---
 
 ## サービス概要

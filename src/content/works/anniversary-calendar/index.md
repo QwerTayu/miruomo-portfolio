@@ -7,6 +7,7 @@ live: "https://anniversary-calendar.miruomo.com"
 period: "2025/12~2026/06"
 order: 1
 cover: "./figures/hero.jpg"
+status: published
 ---
 
 ## サービス概要

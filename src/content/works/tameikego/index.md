@@ -7,6 +7,7 @@ live: "https://tameikego.com"
 period: "2023/08~2026/03"
 order: 0
 cover: "./figures/hero.jpg"
+status: editing
 ---
 
 ## サービス概要

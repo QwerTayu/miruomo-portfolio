@@ -7,6 +7,7 @@ live: "https://bocchi-talk.nitacwpl.tech"
 period: "2023/07~2023/12"
 order: 0
 cover: "./figures/hero.jpg"
+status: editing
 ---
 
 ## サービス概要

@@ -7,6 +7,7 @@ live: "https://miruomo.com"
 period: "2026/05〜"
 order: 1
 cover: "./figures/hero.jpg"
+status: wip
 ---
 
 ## サービス概要

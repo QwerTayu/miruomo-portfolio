@@ -7,6 +7,7 @@ live: "https://nitacwpl.tech/sports/sports"
 period: "2022/09~2022/10"
 order: 0
 cover: "./figures/hero.jpg"
+status: editing
 ---
 
 ## サービス概要

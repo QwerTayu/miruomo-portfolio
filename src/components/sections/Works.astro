@@ -12,11 +12,13 @@ entries.sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
 const workKey = (id: string) => id.split("/")[0];
 
 const works = await Promise.all(
-  entries.map(async (entry) => ({
-    entry,
-    rendered: await render(entry),
-    key: workKey(entry.id),
-  })),
+  entries
+    .filter((entry) => entry.data.status !== "hidden")
+    .map(async (entry) => ({
+      entry,
+      rendered: await render(entry),
+      key: workKey(entry.id),
+    })),
 );
 ---
 
@@ -58,7 +60,11 @@ const works = await Promise.all(
             )}
             <div class="work-card__body">
               <p class="work-card__period">{entry.data.period}</p>
-              <h3 class="work-card__title">{entry.data.title}</h3>
+              <div class="work-card__title-row">
+                <h3 class="work-card__title">{entry.data.title}</h3>
+                {entry.data.status === "editing" && <span class="status-badge status-badge--editing">✏️ Editing</span>}
+                {entry.data.status === "wip" && <span class="status-badge status-badge--wip">🚧 WIP</span>}
+              </div>
               <p class="work-card__desc">{entry.data.description}</p>
               <div class="work-card__tags">
                 {entry.data.tags.map((tag) => (
@@ -115,7 +121,11 @@ const works = await Promise.all(
         )}
         <div class="modal__header">
           <p class="modal__period">{entry.data.period}</p>
-          <h2 class="modal__title">{entry.data.title}</h2>
+          <div class="modal__title-row">
+            <h2 class="modal__title">{entry.data.title}</h2>
+            {entry.data.status === "editing" && <span class="status-badge status-badge--editing">✏️ Editing</span>}
+            {entry.data.status === "wip" && <span class="status-badge status-badge--wip">🚧 WIP</span>}
+          </div>
           <div class="modal__tags">
             {entry.data.tags.map((tag) => (
               <span class="tag">{tag}</span>
@@ -592,6 +602,63 @@ const works = await Promise.all(
 
   :global(.prose tr:nth-child(even) td) {
     background: rgba(247, 244, 239, 0.02);
+  }
+
+  /* ── Status badges ───────────────────────── */
+  .work-card__title-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  :global(.status-badge) {
+    display: inline-flex;
+    align-items: center;
+    font-family: "DM Mono", monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    padding: 0.2em 0.5em;
+    border-radius: 3px;
+    white-space: nowrap;
+    line-height: 1.5;
+  }
+
+  :global(.status-badge--editing) {
+    background: rgba(251, 191, 36, 0.12);
+    color: #92670c;
+    border: 1px solid rgba(251, 191, 36, 0.4);
+  }
+
+  :global(.status-badge--wip) {
+    background: rgba(249, 115, 22, 0.12);
+    color: #9a3412;
+    border: 1px solid rgba(249, 115, 22, 0.3);
+  }
+
+  :global(.modal__title-row) {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+
+  :global(.modal__title-row .modal__title) {
+    margin-bottom: 0;
+  }
+
+  :global(.modal__header .status-badge--editing) {
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.15);
+    border-color: rgba(251, 191, 36, 0.35);
+  }
+
+  :global(.modal__header .status-badge--wip) {
+    color: #fb923c;
+    background: rgba(249, 115, 22, 0.15);
+    border-color: rgba(249, 115, 22, 0.3);
   }
 
   @keyframes float-hint {
