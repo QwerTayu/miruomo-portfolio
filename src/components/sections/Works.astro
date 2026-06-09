@@ -388,6 +388,13 @@ const works = await Promise.all(
   }
 
   /* Prose styles for markdown content */
+  :global(.prose img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    margin: 0.5rem 0;
+  }
+
   :global(.prose h2) {
     font-family: "DM Serif Display", serif;
     font-size: 1.2rem;
