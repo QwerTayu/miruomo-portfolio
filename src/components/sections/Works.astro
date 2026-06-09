@@ -6,21 +6,19 @@ import { t } from "../../i18n/ui";
 const lang = "ja";
 
 const entries = await getCollection("works");
-entries.sort((a, b) => {
-  const aEnd = a.data.period.split("~").pop()!;
-  const bEnd = b.data.period.split("~").pop()!;
-  return bEnd.localeCompare(aEnd);
-});
+entries.sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
 
 // glob loader では id が "tercet-cam/index" 形式になるので先頭セグメントをキーとして使う
 const workKey = (id: string) => id.split("/")[0];
 
 const works = await Promise.all(
-  entries.map(async (entry) => ({
-    entry,
-    rendered: await render(entry),
-    key: workKey(entry.id),
-  })),
+  entries
+    .filter((entry) => entry.data.status !== "hidden")
+    .map(async (entry) => ({
+      entry,
+      rendered: await render(entry),
+      key: workKey(entry.id),
+    })),
 );
 ---
 
@@ -32,12 +30,19 @@ const works = await Promise.all(
       <div class="section-rule" style="background: var(--color-border)"></div>
     </header>
 
+    <div class="works-sort fade-in">
+      <button class="works-sort__btn is-active" data-sort="appeal">Featured</button>
+      <button class="works-sort__btn" data-sort="date">Newest</button>
+    </div>
+
     <div class="works-grid">
       {
         works.map(({ entry, key }) => (
           <article
             class="work-card fade-in"
             data-open-work={key}
+            data-period={entry.data.period.split("~")[0]}
+            data-order={entry.data.order ?? 999}
             role="button"
             tabindex="0"
             aria-label={`${entry.data.title} の詳細を見る`}
@@ -55,7 +60,11 @@ const works = await Promise.all(
             )}
             <div class="work-card__body">
               <p class="work-card__period">{entry.data.period}</p>
-              <h3 class="work-card__title">{entry.data.title}</h3>
+              <div class="work-card__title-row">
+                <h3 class="work-card__title">{entry.data.title}</h3>
+                {entry.data.status === "editing" && <span class="status-badge status-badge--editing">✏️ Editing</span>}
+                {entry.data.status === "wip" && <span class="status-badge status-badge--wip">🚧 WIP</span>}
+              </div>
               <p class="work-card__desc">{entry.data.description}</p>
               <div class="work-card__tags">
                 {entry.data.tags.map((tag) => (
@@ -107,13 +116,16 @@ const works = await Promise.all(
           <img
             src={entry.data.cover.src}
             alt={entry.data.title}
-            loading="lazy"
             class="modal__cover"
           />
         )}
         <div class="modal__header">
           <p class="modal__period">{entry.data.period}</p>
-          <h2 class="modal__title">{entry.data.title}</h2>
+          <div class="modal__title-row">
+            <h2 class="modal__title">{entry.data.title}</h2>
+            {entry.data.status === "editing" && <span class="status-badge status-badge--editing">✏️ Editing</span>}
+            {entry.data.status === "wip" && <span class="status-badge status-badge--wip">🚧 WIP</span>}
+          </div>
           <div class="modal__tags">
             {entry.data.tags.map((tag) => (
               <span class="tag">{tag}</span>
@@ -168,6 +180,36 @@ const works = await Promise.all(
 <button class="modal__close-fab" id="modal-close-fab" aria-label={t(lang, "works.close")}>✕</button>
 
 <style>
+  /* ── Sort buttons ─────────────────────────── */
+  .works-sort {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .works-sort__btn {
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--color-ink-3);
+    padding: 0.3em 0.85em;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+
+  .works-sort__btn:hover {
+    color: var(--color-ink);
+    border-color: var(--color-ink-3);
+  }
+
+  .works-sort__btn.is-active {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    background: rgba(255, 48, 29, 0.06);
+  }
+
   /* ── Works grid ───────────────────────────── */
   .works-grid {
     display: grid;
@@ -387,44 +429,236 @@ const works = await Promise.all(
     border-top: 1px solid var(--color-ink-2);
   }
 
-  /* Prose styles for markdown content */
-  :global(.prose h2) {
-    font-family: "DM Serif Display", serif;
-    font-size: 1.2rem;
-    font-weight: 400;
+  /* ── Prose (GitHub-like dark) ──────────── */
+  :global(.prose) {
+    font-family: "Noto Sans JP", sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: rgba(247, 244, 239, 0.72);
+    word-break: break-word;
+  }
+
+  :global(.prose h1),
+  :global(.prose h2),
+  :global(.prose h3),
+  :global(.prose h4),
+  :global(.prose h5),
+  :global(.prose h6) {
+    font-family: "Noto Sans JP", sans-serif;
+    font-weight: 700;
     color: var(--color-paper);
-    margin: 1.5rem 0 0.75rem;
+    margin-top: 1.75rem;
+    margin-bottom: 0.6rem;
+    line-height: 1.3;
+  }
+
+  :global(.prose h1) {
+    font-family: "DM Serif Display", serif;
+    font-weight: 400;
+  }
+
+  :global(.prose h2) {
+    font-size: 1.2rem;
+    padding-bottom: 0.4em;
+    border-bottom: 1px solid var(--color-ink-2);
+  }
+
+  :global(.prose h3) {
+    font-size: 1rem;
+  }
+
+  :global(.prose h4) {
+    font-size: 0.9rem;
   }
 
   :global(.prose p) {
-    font-size: 0.9rem;
-    color: var(--color-ink-3);
-    line-height: 1.8;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  :global(.prose strong) {
+    font-weight: 400;
+    color: var(--color-paper);
+  }
+
+  :global(.prose em) {
+    font-style: italic;
+  }
+
+  :global(.prose ul),
+  :global(.prose ol) {
+    padding-left: 1.6em;
+    margin-bottom: 0.9rem;
+  }
+
+  :global(.prose ul) {
+    list-style-type: disc;
+  }
+
+  :global(.prose ol) {
+    list-style-type: decimal;
+  }
+
+  :global(.prose li) {
+    margin-bottom: 0.3rem;
+    line-height: 1.75;
+  }
+
+  :global(.prose li > ul),
+  :global(.prose li > ol) {
+    margin-top: 0.2rem;
+    margin-bottom: 0;
+  }
+
+  :global(.prose blockquote) {
+    border-left: 3px solid var(--color-ink-2);
+    padding: 0.3em 1em;
+    margin: 0 0 0.9rem;
+    color: rgba(247, 244, 239, 0.5);
+  }
+
+  :global(.prose blockquote p) {
+    margin-bottom: 0;
+  }
+
+  :global(.prose code) {
+    font-family: "DM Mono", monospace;
+    font-size: 0.8em;
+    background: rgba(247, 244, 239, 0.08);
+    border: 1px solid rgba(247, 244, 239, 0.1);
+    border-radius: 4px;
+    padding: 0.15em 0.4em;
+    color: var(--color-paper);
+  }
+
+  :global(.prose pre) {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--color-ink-2);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    overflow-x: auto;
+    margin-bottom: 0.9rem;
+  }
+
+  :global(.prose pre code) {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 0.85rem;
+    color: var(--color-paper);
+  }
+
+  :global(.prose a) {
+    color: #6bb5ff;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  :global(.prose a:hover) {
+    color: #8fccff;
+  }
+
+  :global(.prose hr) {
+    border: none;
+    border-top: 1px solid var(--color-ink-2);
+    margin: 1.5rem 0;
+  }
+
+  :global(.prose img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    margin: 0.75rem 0;
+    display: block;
   }
 
   :global(.prose table) {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.85rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.9rem;
+  }
+
+  :global(.prose thead) {
+    background: rgba(247, 244, 239, 0.04);
   }
 
   :global(.prose th) {
     text-align: left;
     padding: 0.5rem 0.75rem;
-    border-bottom: 1px solid var(--color-ink-2);
+    border: 1px solid var(--color-ink-2);
     font-family: "DM Mono", monospace;
     font-size: 11px;
     color: var(--color-ink-3);
     letter-spacing: 0.05em;
+    font-weight: 600;
   }
 
   :global(.prose td) {
     padding: 0.5rem 0.75rem;
-    border-bottom: 1px solid var(--color-ink-2);
+    border: 1px solid var(--color-ink-2);
     color: var(--color-paper);
     font-size: 0.85rem;
+  }
+
+  :global(.prose tr:nth-child(even) td) {
+    background: rgba(247, 244, 239, 0.02);
+  }
+
+  /* ── Status badges ───────────────────────── */
+  .work-card__title-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  :global(.status-badge) {
+    display: inline-flex;
+    align-items: center;
+    font-family: "DM Mono", monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    padding: 0.2em 0.5em;
+    border-radius: 3px;
+    white-space: nowrap;
+    line-height: 1.5;
+  }
+
+  :global(.status-badge--editing) {
+    background: rgba(251, 191, 36, 0.12);
+    color: #92670c;
+    border: 1px solid rgba(251, 191, 36, 0.4);
+  }
+
+  :global(.status-badge--wip) {
+    background: rgba(249, 115, 22, 0.12);
+    color: #9a3412;
+    border: 1px solid rgba(249, 115, 22, 0.3);
+  }
+
+  :global(.modal__title-row) {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+
+  :global(.modal__title-row .modal__title) {
+    margin-bottom: 0;
+  }
+
+  :global(.modal__header .status-badge--editing) {
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.15);
+    border-color: rgba(251, 191, 36, 0.35);
+  }
+
+  :global(.modal__header .status-badge--wip) {
+    color: #fb923c;
+    background: rgba(249, 115, 22, 0.15);
+    border-color: rgba(249, 115, 22, 0.3);
   }
 
   @keyframes float-hint {
@@ -492,6 +726,31 @@ const works = await Promise.all(
 </style>
 
 <script>
+  // ── Sort ──────────────────────────────────
+  const grid = document.querySelector<HTMLElement>(".works-grid")!;
+
+  function sortWorks(mode: "date" | "appeal") {
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>(".work-card"));
+    cards.sort((a, b) => {
+      if (mode === "date") {
+        return (b.dataset.period ?? "").localeCompare(a.dataset.period ?? "");
+      }
+      return Number(b.dataset.order ?? 0) - Number(a.dataset.order ?? 0);
+    });
+    cards.forEach((c) => grid.appendChild(c));
+  }
+
+  sortWorks("appeal");
+
+  document.querySelectorAll<HTMLButtonElement>(".works-sort__btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".works-sort__btn").forEach((b) => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+      sortWorks(btn.dataset.sort as "date" | "appeal");
+    });
+  });
+
+  // ── Modal ─────────────────────────────────
   const overlay = document.getElementById("modal-overlay")!;
   const modalContent = document.getElementById("modal-content")!;
   const closeFab = document.getElementById("modal-close-fab");
@@ -574,5 +833,12 @@ const works = await Promise.all(
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeModal();
+  });
+
+  // Preload all images hidden in modal-store so they're cached before the modal opens
+  document.querySelectorAll<HTMLImageElement>(".modal-store img").forEach((img) => {
+    const pre = new Image();
+    if (img.srcset) pre.srcset = img.srcset;
+    pre.src = img.src;
   });
 </script>

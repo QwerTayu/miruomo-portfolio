@@ -5,8 +5,9 @@ tags: ["Next.js", "JavaScript", "Firebase"]
 github: "https://github.com/QwerTayu/heya-gram"
 live: "https://heya-gram.miruomo.com"
 period: "2025/12~2026/06"
-featured: true
+order: 0
 cover: "./figures/hero.jpg"
+status: editing
 ---
 
 ## サービス概要
