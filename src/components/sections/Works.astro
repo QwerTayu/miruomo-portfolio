@@ -6,11 +6,7 @@ import { t } from "../../i18n/ui";
 const lang = "ja";
 
 const entries = await getCollection("works");
-entries.sort((a, b) => {
-  const aEnd = a.data.period.split("~").pop()!;
-  const bEnd = b.data.period.split("~").pop()!;
-  return bEnd.localeCompare(aEnd);
-});
+entries.sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
 
 // glob loader では id が "tercet-cam/index" 形式になるので先頭セグメントをキーとして使う
 const workKey = (id: string) => id.split("/")[0];
@@ -32,12 +28,19 @@ const works = await Promise.all(
       <div class="section-rule" style="background: var(--color-border)"></div>
     </header>
 
+    <div class="works-sort fade-in">
+      <button class="works-sort__btn is-active" data-sort="appeal">Featured</button>
+      <button class="works-sort__btn" data-sort="date">Newest</button>
+    </div>
+
     <div class="works-grid">
       {
         works.map(({ entry, key }) => (
           <article
             class="work-card fade-in"
             data-open-work={key}
+            data-period={entry.data.period.split("~")[0]}
+            data-order={entry.data.order ?? 999}
             role="button"
             tabindex="0"
             aria-label={`${entry.data.title} の詳細を見る`}
@@ -168,6 +171,36 @@ const works = await Promise.all(
 <button class="modal__close-fab" id="modal-close-fab" aria-label={t(lang, "works.close")}>✕</button>
 
 <style>
+  /* ── Sort buttons ─────────────────────────── */
+  .works-sort {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .works-sort__btn {
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--color-ink-3);
+    padding: 0.3em 0.85em;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+
+  .works-sort__btn:hover {
+    color: var(--color-ink);
+    border-color: var(--color-ink-3);
+  }
+
+  .works-sort__btn.is-active {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    background: rgba(255, 48, 29, 0.06);
+  }
+
   /* ── Works grid ───────────────────────────── */
   .works-grid {
     display: grid;
@@ -499,6 +532,31 @@ const works = await Promise.all(
 </style>
 
 <script>
+  // ── Sort ──────────────────────────────────
+  const grid = document.querySelector<HTMLElement>(".works-grid")!;
+
+  function sortWorks(mode: "date" | "appeal") {
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>(".work-card"));
+    cards.sort((a, b) => {
+      if (mode === "date") {
+        return (b.dataset.period ?? "").localeCompare(a.dataset.period ?? "");
+      }
+      return Number(b.dataset.order ?? 0) - Number(a.dataset.order ?? 0);
+    });
+    cards.forEach((c) => grid.appendChild(c));
+  }
+
+  sortWorks("appeal");
+
+  document.querySelectorAll<HTMLButtonElement>(".works-sort__btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".works-sort__btn").forEach((b) => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+      sortWorks(btn.dataset.sort as "date" | "appeal");
+    });
+  });
+
+  // ── Modal ─────────────────────────────────
   const overlay = document.getElementById("modal-overlay")!;
   const modalContent = document.getElementById("modal-content")!;
   const closeFab = document.getElementById("modal-close-fab");

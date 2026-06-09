@@ -5,7 +5,7 @@ tags: ["Astro", "TypeScript", "PWA"]
 github: "https://github.com/QwerTayu/miruomo-portfolio"
 live: "https://miruomo.com"
 period: "2026/05~2026/06"
-featured: true
+order: 0
 cover: "./figures/hero.jpg"
 ---
 

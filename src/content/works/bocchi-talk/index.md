@@ -5,7 +5,7 @@ tags: ["Next.js", "TypeScript", "Firebase", "Gemini API"]
 github: "https://github.com/hengin-eer/bocchi-talk"
 live: "https://bocchi-talk.nitacwpl.tech"
 period: "2023/07~2023/12"
-featured: true
+order: 0
 cover: "./figures/hero.jpg"
 ---
 

@@ -5,7 +5,7 @@ tags: ["Next.js", "TypeScript", "Firebase", "Vercel Cron Jobs", "ESLint", "Tailw
 github: "https://github.com/QwerTayu/anniversary-calendar"
 live: "https://anniversary-calendar.miruomo.com"
 period: "2025/12~2026/06"
-featured: true
+order: 0
 cover: "./figures/hero.jpg"
 ---
 

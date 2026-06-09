@@ -5,7 +5,7 @@ tags: ["Next.js", "TypeScript", "PWA"]
 github: "https://github.com/QwerTayu/tercet"
 live: "https://tercet-cam.miruomo.com"
 period: "2026/06"
-featured: true
+order: 0
 cover: "./figures/hero.jpg"
 ---
 

@@ -5,7 +5,7 @@ tags: ["Next.js", "TypeScript"]
 github: null
 live: "https://nitacwpl.tech/sports/sports"
 period: "2022/09~2022/10"
-featured: true
+order: 0
 cover: "./figures/hero.jpg"
 ---
 

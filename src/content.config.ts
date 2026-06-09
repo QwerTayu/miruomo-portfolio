@@ -11,7 +11,7 @@ const works = defineCollection({
       github: z.string().url().nullable(),
       live: z.string().url().nullable(),
       period: z.string(),
-      featured: z.boolean().default(false),
+      order: z.number(),
       cover: image().optional(),
     }),
 });

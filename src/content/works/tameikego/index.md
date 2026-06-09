@@ -5,7 +5,7 @@ tags: ["Next.js", "TypeScript", "PostgreSQL"]
 github: null
 live: "https://tameikego.com"
 period: "2023/08~2026/03"
-featured: true
+order: 0
 cover: "./figures/hero.jpg"
 ---
 

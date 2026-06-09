@@ -5,7 +5,7 @@ tags: ["Next.js", "TypeScript"]
 github: "https://github.com/NITACwpl/sports-fes2023"
 live: "https://sports2023.nitacwpl.tech"
 period: "2023/09~2023/10"
-featured: true
+order: 0
 cover: "./figures/hero.jpg"
 ---
 

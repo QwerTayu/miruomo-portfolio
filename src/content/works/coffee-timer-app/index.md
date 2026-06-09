@@ -5,7 +5,7 @@ tags: ["Next.js", "TypeScript", "LocalStorage", "App Router"]
 github: "https://github.com/QwerTayu/coffee-timer-web-app"
 live: "https://coffee-timer-web-app.miruomo.com"
 period: "2024/10"
-featured: true
+order: 0
 cover: "./figures/hero.jpg"
 ---
 
