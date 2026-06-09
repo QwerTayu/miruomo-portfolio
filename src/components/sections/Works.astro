@@ -110,7 +110,6 @@ const works = await Promise.all(
           <img
             src={entry.data.cover.src}
             alt={entry.data.title}
-            loading="lazy"
             class="modal__cover"
           />
         )}
@@ -767,5 +766,12 @@ const works = await Promise.all(
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeModal();
+  });
+
+  // Preload all images hidden in modal-store so they're cached before the modal opens
+  document.querySelectorAll<HTMLImageElement>(".modal-store img").forEach((img) => {
+    const pre = new Image();
+    if (img.srcset) pre.srcset = img.srcset;
+    pre.src = img.src;
   });
 </script>

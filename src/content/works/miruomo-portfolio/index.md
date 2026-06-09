@@ -5,7 +5,7 @@ tags: ["Astro", "TypeScript", "React", "GSAP", "Three.js(予定)"]
 github: "https://github.com/QwerTayu/miruomo-portfolio"
 live: "https://miruomo.com"
 period: "2026/05〜"
-order: 0
+order: 1
 cover: "./figures/hero.jpg"
 ---
 

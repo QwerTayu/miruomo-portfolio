@@ -5,7 +5,7 @@ tags: ["Next.js", "TypeScript", "PWA", "IndexedDB", "ffmpeg.wasm"]
 github: "https://github.com/QwerTayu/tercet-cam"
 live: "https://tercet-cam.miruomo.com"
 period: "2026/06〜"
-order: 0
+order: 1
 cover: "./figures/hero.jpg"
 ---
 
