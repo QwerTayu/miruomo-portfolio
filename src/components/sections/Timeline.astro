@@ -3,20 +3,6 @@ import { t } from '../../i18n/ui';
 import { timeline } from '../../data/timeline';
 
 const lang = 'ja';
-
-function formatDate(date: string): string {
-  const [year, month] = date.split('-');
-  return `${year}.${month}`;
-}
-
-function formatPeriod(date: string, dateEnd?: string): string {
-  if (!dateEnd) return formatDate(date);
-  const [startYear] = date.split('-');
-  const [endYear, endMonth] = dateEnd.split('-');
-  return startYear === endYear
-    ? `${formatDate(date)}〜${endMonth}`
-    : `${formatDate(date)}〜${formatDate(dateEnd)}`;
-}
 ---
 
 <section id="timeline" class="section section--light timeline">
@@ -34,7 +20,7 @@ function formatPeriod(date: string, dateEnd?: string): string {
         <div class={`timeline-item timeline-item--${entry.side} fade-in`}>
           <div class="timeline-dot" aria-hidden="true"></div>
           <div class="timeline-card">
-            <p class="timeline-card__date">{formatPeriod(entry.date, entry.dateEnd)}</p>
+            <p class="timeline-card__date">{entry.period}</p>
             <p class="timeline-card__title">{entry.title}</p>
             {entry.detail && (
               <p class="timeline-card__detail">{entry.detail}</p>
