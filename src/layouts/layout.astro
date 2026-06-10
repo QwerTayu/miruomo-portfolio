@@ -13,6 +13,9 @@ const {
 
 const ga4Id     = import.meta.env.PUBLIC_GA4_ID;
 const clarityId = import.meta.env.PUBLIC_CLARITY_ID;
+
+const siteUrl = 'https://miruomo.com';
+const ogImage = `${siteUrl}/overview.png`;
 ---
 
 <!doctype html>
@@ -24,6 +27,24 @@ const clarityId = import.meta.env.PUBLIC_CLARITY_ID;
     <meta name="description" content={description} />
     <link rel="icon" type="image/png" href="/profile.png" />
     <title>{title}</title>
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={siteUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:site_name" content="miruomo.com" />
+
+    <!-- Twitter Card (X.com) -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={siteUrl} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
