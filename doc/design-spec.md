@@ -170,7 +170,7 @@ Three.js を後から差し込めるよう、Hero と Works に**プレースホ
 │                                        │  (Phase1: CSS枠線)   │  │
 │  miruomo.com                           │  (Phase2: Three.js)  │  │
 │  ─────────────────────────────         └──────────────────────┘  │
-│  SOFTWARE ENGINEER                                               │ 100vh
+│  STUDENT SOFTWARE ENGINEER                                               │ 100vh
 │  Akashi KOSEN → Nagaoka University of Technology                 │
 │                                                                  │
 │  [Works を見る →]    [About me]                                  │
@@ -571,7 +571,7 @@ const ui = {
     'nav.timeline': 'Timeline',
     'nav.articles': 'Articles',
     'hero.name':    'miruomo.com',
-    'hero.role':    'SOFTWARE ENGINEER',
+    'hero.role':    'STUDENT SOFTWARE ENGINEER',
     'hero.cta':     'Works を見る',
     'about.title':  'About me',
     'works.title':  'Works',

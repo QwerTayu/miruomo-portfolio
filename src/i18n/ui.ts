@@ -14,7 +14,7 @@ const ui = {
     "nav.articles": "Articles",
 
     "hero.name": "miruomo.com",
-    "hero.role": "SOFTWARE ENGINEER",
+    "hero.role": "STUDENT SOFTWARE ENGINEER",
     "hero.sub": "Akashi KOSEN → Nagaoka University of Technology",
     "hero.cta": "Works を見る",
     "hero.cta2": "About me",
