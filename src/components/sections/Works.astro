@@ -735,7 +735,9 @@ const works = await Promise.all(
       if (mode === "date") {
         return (b.dataset.period ?? "").localeCompare(a.dataset.period ?? "");
       }
-      return Number(b.dataset.order ?? 0) - Number(a.dataset.order ?? 0);
+      const orderDiff = Number(b.dataset.order ?? 0) - Number(a.dataset.order ?? 0);
+      if (orderDiff !== 0) return orderDiff;
+      return (b.dataset.period ?? "").localeCompare(a.dataset.period ?? "");
     });
     cards.forEach((c) => grid.appendChild(c));
   }
