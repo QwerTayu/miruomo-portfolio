@@ -95,7 +95,7 @@ DID（差分の差法）を用いて分析。
 ### メディア
 - [【記事】神戸新聞NEXT（2025.01）](https://www.kobe-np.co.jp/news/touban/202501/0018522647.shtml) — ため池の生態系、ゲームで学んで
 - [【Yahooニュース掲載・記事・ラジオ】ラジトピ・ラジオ関西（2025.01）](https://jocr.jp/raditopi/2025/01/29/614120/) — 位置情報活用したゲーム開発
-- [【記事】加古川経済新聞（2025.06）](https://higashibarima.keizai.biz/) — 東播磨地域を巡るデジタルスタンプラリー
+- [【記事】加古川経済新聞（2025.06）](https://kakogawa.keizai.biz/headline/2985/) — 東播磨地域を巡るデジタルスタンプラリー
 - [【YouTube】BAN-BANテレビ「ひがタン！」（2025.08）](https://www.youtube.com/watch?v=Thg2v6STYhw) — アプリを体験しながら紹介
 - [【記事】明石高専 公式ニュース（2025.06）](https://www.akashi.ac.jp/news/20250624kkp001.html) — EXPO共鳴フェス出展報告
 

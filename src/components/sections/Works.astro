@@ -759,6 +759,20 @@ const works = await Promise.all(
     const source = document.getElementById(`work-modal-${workId}`);
     if (!source) return;
     modalContent.innerHTML = source.innerHTML;
+    modalContent.querySelectorAll<HTMLAnchorElement>(".prose a").forEach((a) => {
+      try {
+        const url = new URL(a.href, location.href);
+        const isPortfolio =
+          url.hostname === location.hostname ||
+          url.hostname === "miruomo.com";
+        if (!isPortfolio) {
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+        }
+      } catch {
+        // 解析できない href はそのまま
+      }
+    });
     overlay.classList.add("is-open");
     overlay.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
