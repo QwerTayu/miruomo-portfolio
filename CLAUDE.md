@@ -56,7 +56,7 @@ The site is built in two phases. See `doc/design-spec.md` for the full spec.
 
 **Content data flow:** `doc/timeline.json` is a planning document; actual data is written directly in `src/data/timeline.ts`. `doc/` files are never imported by the build.
 
-**i18n skeleton:** `src/i18n/ui.ts` defines all text strings via `t(lang, key)`. Never hardcode display strings in components. In Phase 1, `lang` is always `'ja'`. Hero name is `'miruomo.com'`; role is `'SOFTWARE ENGINEER'` (no PHOTOGRAPHER).
+**i18n skeleton:** `src/i18n/ui.ts` defines all text strings via `t(lang, key)`. Never hardcode display strings in components. In Phase 1, `lang` is always `'ja'`. Hero name is `'miruomo.com'`; role is `'STUDENT SOFTWARE ENGINEER'` (no PHOTOGRAPHER).
 
 **Three.js placeholders:** `Hero.astro` contains `<div id="camera-mount" class="camera-placeholder">`. This must be preserved — Phase 2 replaces it with `<CameraScene client:only="react" />`.
 
