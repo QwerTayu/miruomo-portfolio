@@ -1,8 +1,9 @@
 ---
 import { t } from '../../i18n/ui';
+import { resolveLang } from '../../i18n/lang';
 import { staticArticles } from '../../data/articles';
 
-const lang = 'ja';
+const lang = resolveLang(Astro.currentLocale);
 
 type Article = {
   title: string;
@@ -71,7 +72,7 @@ function formatDate(iso: string): string {
         ))}
       </ul>
     ) : (
-      <p class="articles-empty">記事を取得できませんでした。</p>
+      <p class="articles-empty">{t(lang, 'articles.empty')}</p>
     )}
 
   </div>

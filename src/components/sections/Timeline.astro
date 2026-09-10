@@ -1,8 +1,9 @@
 ---
 import { t } from '../../i18n/ui';
+import { resolveLang } from '../../i18n/lang';
 import { timeline } from '../../data/timeline';
 
-const lang = 'ja';
+const lang = resolveLang(Astro.currentLocale);
 ---
 
 <section id="timeline" class="section section--light timeline">
@@ -21,9 +22,9 @@ const lang = 'ja';
           <div class="timeline-dot" aria-hidden="true"></div>
           <div class="timeline-card">
             <p class="timeline-card__date">{entry.period}</p>
-            <p class="timeline-card__title">{entry.title}</p>
+            <p class="timeline-card__title">{entry.title[lang]}</p>
             {entry.detail && (
-              <p class="timeline-card__detail">{entry.detail}</p>
+              <p class="timeline-card__detail">{entry.detail[lang]}</p>
             )}
           </div>
         </div>

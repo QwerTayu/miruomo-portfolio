@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/layout.astro';
 import NavBar from '../components/ui/NavBar.astro';
+import Footer from '../components/ui/Footer.astro';
 import Hero from '../components/sections/Hero.astro';
 import About from '../components/sections/About.astro';
 import Works from '../components/sections/Works.astro';
@@ -18,27 +19,9 @@ import Articles from '../components/sections/Articles.astro';
     <Articles />
   </main>
 
-  <footer class="footer">
-    <div class="container">
-      <p class="footer__copy">© 2026 miruomo.com</p>
-    </div>
-  </footer>
+  <Footer />
 </Layout>
 
 <script>
   import '../scripts/scroll-animation.ts';
 </script>
-
-<style>
-  .footer {
-    padding: 2rem 0;
-    border-top: 1px solid var(--color-ink-2);
-  }
-
-  .footer__copy {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--color-ink-3);
-    text-align: center;
-  }
-</style>

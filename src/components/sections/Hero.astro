@@ -1,6 +1,7 @@
 ---
 import { t } from '../../i18n/ui';
-const lang = 'ja';
+import { resolveLang } from '../../i18n/lang';
+const lang = resolveLang(Astro.currentLocale);
 ---
 
 <section id="hero" class="hero">

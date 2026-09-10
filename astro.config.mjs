@@ -9,4 +9,11 @@ export default defineConfig({
   integrations: [partytown({
       config: { forward: ['dataLayer.push'] },
     }), react()],
+  i18n: {
+    defaultLocale: 'ja',
+    locales: ['ja', 'en'],
+    routing: {
+      prefixDefaultLocale: false,
+    },
+  },
 });
