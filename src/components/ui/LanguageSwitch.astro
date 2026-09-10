@@ -1,0 +1,47 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { resolveLang } from '../../i18n/lang';
+
+const lang = resolveLang(Astro.currentLocale);
+const targetLang = lang === 'en' ? 'ja' : 'en';
+const targetHref = getRelativeLocaleUrl(targetLang);
+---
+
+<a
+  href={targetHref}
+  class="lang-switch"
+  id="lang-switch"
+  aria-label={`Switch to ${targetLang === 'en' ? 'English' : '日本語'}`}
+>
+  {targetLang.toUpperCase()}
+</a>
+
+<style>
+  .lang-switch {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--color-ink-3);
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--color-ink-2);
+    border-radius: var(--radius-sm);
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .lang-switch:hover {
+    color: var(--color-paper);
+    border-color: var(--color-ink-3);
+  }
+</style>
+
+<script>
+  // Preserve the in-page anchor (#works, ...) and the Works modal's
+  // ?work= query param across a language switch — these are client-only
+  // state that the server-rendered href can't know about on a static site.
+  const link = document.getElementById('lang-switch') as HTMLAnchorElement | null;
+  if (link) {
+    const url = new URL(link.href, location.href);
+    if (location.search) url.search = location.search;
+    if (location.hash) url.hash = location.hash;
+    link.href = url.toString();
+  }
+</script>

@@ -1,12 +1,13 @@
 ---
 import { t } from '../../i18n/ui';
+import { resolveLang } from '../../i18n/lang';
 import { manualSkills, type Skill } from '../../data/skills';
 import { socialLinks } from '../../data/links';
 import { Image } from 'astro:assets';
 import avatarPhoto from '../../assets/about/avatar_photo.png';
 import avatarNotion from '../../assets/about/avatar_notion.png';
 
-const lang = 'ja';
+const lang = resolveLang(Astro.currentLocale);
 
 // GitHub API — build-time fetch
 type GithubSkill = { name: string; source: 'github' };
@@ -33,8 +34,8 @@ try {
               repo.languages_url,
               { headers },
             ).then(r => r.json());
-            for (const [lang, bytes] of Object.entries(langs)) {
-              langBytes[lang] = (langBytes[lang] ?? 0) + bytes;
+            for (const [langName, bytes] of Object.entries(langs)) {
+              langBytes[langName] = (langBytes[langName] ?? 0) + bytes;
             }
           } catch { /* skip repo on error */ }
         }),
@@ -71,18 +72,18 @@ const interests = ['Photography', 'Eating', 'Working Abroad', 'AtCoder'];
     <div class="about__grid">
       <!-- Avatar -->
       <div class="about__avatar-wrap fade-in">
-        <div class="avatar-flip" id="avatar-flip" aria-label="プロフィール写真（クリックで切り替え）">
+        <div class="avatar-flip" id="avatar-flip" aria-label={t(lang, 'about.avatarToggleLabel')}>
           <div class="avatar-flip__inner">
             <div class="avatar-flip__face avatar-flip__front">
-              <Image src={avatarPhoto} alt="プロフィール写真" class="about__avatar" width={240} height={240} />
+              <Image src={avatarPhoto} alt={t(lang, 'about.avatarAlt')} class="about__avatar" width={240} height={240} />
             </div>
             <div class="avatar-flip__face avatar-flip__back">
-              <Image src={avatarNotion} alt="プロフィール写真（Notion風）" class="about__avatar" width={240} height={240} />
+              <Image src={avatarNotion} alt={t(lang, 'about.avatarAltNotion')} class="about__avatar" width={240} height={240} />
             </div>
           </div>
         </div>
         <p class="about__name">miruomo.com</p>
-        <p class="about__affil">明石高専 → 長岡技科大</p>
+        <p class="about__affil">{t(lang, 'about.affil')}</p>
         <div class="about__social">
           {socialLinks.map(link => (
             <a

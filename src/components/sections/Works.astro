@@ -1,24 +1,55 @@
 ---
-import { getCollection, render } from "astro:content";
+import { getCollection, render, type CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
 import { t } from "../../i18n/ui";
+import { resolveLang } from "../../i18n/lang";
 
-const lang = "ja";
+const lang = resolveLang(Astro.currentLocale);
 
 const entries = await getCollection("works");
-entries.sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
 
-// glob loader では id が "tercet-cam/index" 形式になるので先頭セグメントをキーとして使う
+// id は "tercet-cam" (ja) / "tercet-cam/en" (en) の形なので先頭セグメントをキーとして使う
 const workKey = (id: string) => id.split("/")[0];
 
+type WorkGroup = {
+  key: string;
+  ja?: CollectionEntry<"works">;
+  en?: CollectionEntry<"works">;
+};
+
+const groups = new Map<string, WorkGroup>();
+for (const entry of entries) {
+  const key = workKey(entry.id);
+  const isEn = entry.id.endsWith("/en");
+  const group = groups.get(key) ?? { key };
+  if (isEn) group.en = entry;
+  else group.ja = entry;
+  groups.set(key, group);
+}
+
+const orderedGroups = Array.from(groups.values())
+  .filter((g): g is WorkGroup & { ja: CollectionEntry<"works"> } => {
+    if (!g.ja) {
+      console.warn(`[Works] "${g.key}" has an index.en.md but no index.md — skipping.`);
+      return false;
+    }
+    return g.ja.data.status !== "hidden";
+  })
+  .sort((a, b) => (a.ja.data.order ?? 999) - (b.ja.data.order ?? 999));
+
 const works = await Promise.all(
-  entries
-    .filter((entry) => entry.data.status !== "hidden")
-    .map(async (entry) => ({
-      entry,
-      rendered: await render(entry),
-      key: workKey(entry.id),
-    })),
+  orderedGroups.map(async (g) => {
+    // .en.md が未着手の作品は ja にフォールバックする
+    const localized = lang === "en" && g.en ? g.en : g.ja;
+    const rendered = await render(localized);
+    return {
+      key: g.key,
+      meta: g.ja.data,
+      title: localized.data.title,
+      description: localized.data.description,
+      rendered,
+    };
+  }),
 );
 ---
 
@@ -37,21 +68,21 @@ const works = await Promise.all(
 
     <div class="works-grid">
       {
-        works.map(({ entry, key }) => (
+        works.map((work) => (
           <article
             class="work-card fade-in"
-            data-open-work={key}
-            data-period={entry.data.period.split("~")[0]}
-            data-order={entry.data.order ?? 999}
+            data-open-work={work.key}
+            data-period={work.meta.period?.split("~")[0]}
+            data-order={work.meta.order ?? 999}
             role="button"
             tabindex="0"
-            aria-label={`${entry.data.title} の詳細を見る`}
+            aria-label={`${work.title} ${t(lang, "works.detail")}`}
           >
-            {entry.data.cover && (
+            {work.meta.cover && (
               <div class="work-card__cover-wrap">
                 <Image
-                  src={entry.data.cover}
-                  alt={entry.data.title}
+                  src={work.meta.cover}
+                  alt={work.title}
                   width={600}
                   height={400}
                   class="work-card__cover"
@@ -59,42 +90,42 @@ const works = await Promise.all(
               </div>
             )}
             <div class="work-card__body">
-              <p class="work-card__period">{entry.data.period}</p>
+              <p class="work-card__period">{work.meta.period}</p>
               <div class="work-card__title-row">
-                <h3 class="work-card__title">{entry.data.title}</h3>
-                {entry.data.status === "editing" && <span class="status-badge status-badge--editing">✏️ Editing</span>}
-                {entry.data.status === "wip" && <span class="status-badge status-badge--wip">🚧 WIP</span>}
+                <h3 class="work-card__title">{work.title}</h3>
+                {work.meta.status === "editing" && <span class="status-badge status-badge--editing">✏️ Editing</span>}
+                {work.meta.status === "wip" && <span class="status-badge status-badge--wip">🚧 WIP</span>}
               </div>
-              <p class="work-card__desc">{entry.data.description}</p>
+              <p class="work-card__desc">{work.description}</p>
               <div class="work-card__tags">
-                {entry.data.tags.map((tag) => (
+                {work.meta.tags?.map((tag) => (
                   <span class="tag tag--light">{tag}</span>
                 ))}
               </div>
               <div class="work-card__footer">
                 <div class="work-card__links">
-                  {entry.data.github && (
+                  {work.meta.github && (
                     <a
-                      href={entry.data.github}
+                      href={work.meta.github}
                       target="_blank"
                       rel="noopener noreferrer"
                       class="work-link stop-propagation"
                     >
-                      GitHub →
+                      {t(lang, "works.github")} →
                     </a>
                   )}
-                  {entry.data.live && (
+                  {work.meta.live && (
                     <a
-                      href={entry.data.live}
+                      href={work.meta.live}
                       target="_blank"
                       rel="noopener noreferrer"
                       class="work-link stop-propagation"
                     >
-                      Live →
+                      {t(lang, "works.demo")} →
                     </a>
                   )}
                 </div>
-                <span class="work-card__hint">詳細を見る →</span>
+                <span class="work-card__hint">{t(lang, "works.detail")} →</span>
               </div>
             </div>
           </article>
@@ -110,55 +141,58 @@ const works = await Promise.all(
 <!-- Hidden pre-rendered modal content store -->
 <div class="modal-store" aria-hidden="true">
   {
-    works.map(({ entry, rendered: { Content }, key }) => (
-      <div id={`work-modal-${key}`}>
-        {entry.data.cover && (
-          <img
-            src={entry.data.cover.src}
-            alt={entry.data.title}
-            class="modal__cover"
-          />
-        )}
-        <div class="modal__header">
-          <p class="modal__period">{entry.data.period}</p>
-          <div class="modal__title-row">
-            <h2 class="modal__title">{entry.data.title}</h2>
-            {entry.data.status === "editing" && <span class="status-badge status-badge--editing">✏️ Editing</span>}
-            {entry.data.status === "wip" && <span class="status-badge status-badge--wip">🚧 WIP</span>}
-          </div>
-          <div class="modal__tags">
-            {entry.data.tags.map((tag) => (
-              <span class="tag">{tag}</span>
-            ))}
-          </div>
-        </div>
-        <div class="modal__body prose">
-          <Content />
-        </div>
-        <div class="modal__links">
-          {entry.data.github && (
-            <a
-              href={entry.data.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn btn--ghost"
-            >
-              GitHub →
-            </a>
+    works.map((work) => {
+      const { Content } = work.rendered;
+      return (
+        <div id={`work-modal-${work.key}`}>
+          {work.meta.cover && (
+            <img
+              src={work.meta.cover.src}
+              alt={work.title}
+              class="modal__cover"
+            />
           )}
-          {entry.data.live && (
-            <a
-              href={entry.data.live}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn btn--primary"
-            >
-              Live →
-            </a>
-          )}
+          <div class="modal__header">
+            <p class="modal__period">{work.meta.period}</p>
+            <div class="modal__title-row">
+              <h2 class="modal__title">{work.title}</h2>
+              {work.meta.status === "editing" && <span class="status-badge status-badge--editing">✏️ Editing</span>}
+              {work.meta.status === "wip" && <span class="status-badge status-badge--wip">🚧 WIP</span>}
+            </div>
+            <div class="modal__tags">
+              {work.meta.tags?.map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+          </div>
+          <div class="modal__body prose">
+            <Content />
+          </div>
+          <div class="modal__links">
+            {work.meta.github && (
+              <a
+                href={work.meta.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn--ghost"
+              >
+                {t(lang, "works.github")} →
+              </a>
+            )}
+            {work.meta.live && (
+              <a
+                href={work.meta.live}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn--primary"
+              >
+                {t(lang, "works.demo")} →
+              </a>
+            )}
+          </div>
         </div>
-      </div>
-    ))
+      );
+    })
   }
 </div>
 
@@ -169,7 +203,7 @@ const works = await Promise.all(
   aria-hidden="true"
   role="dialog"
   aria-modal="true"
-  aria-label="作品詳細"
+  aria-label={t(lang, "works.modalAria")}
 >
   <p class="modal-overlay__hint" aria-hidden="true">tap here to close</p>
   <div class="modal" id="modal">
