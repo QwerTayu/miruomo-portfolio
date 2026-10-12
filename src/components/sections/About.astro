@@ -226,6 +226,12 @@ const interests = ['Photography', 'Eating', 'Working Abroad', 'AtCoder'];
     height: 18px;
   }
 
+  /* LinkedIn artwork has a trademark "R" mark extending past the square logo on the right */
+  .about__social-link[data-service="LinkedIn"] .about__social-icon {
+    object-fit: cover;
+    object-position: left center;
+  }
+
   /* Skills column */
   .about__subtitle {
     font-family: 'DM Mono', monospace;
