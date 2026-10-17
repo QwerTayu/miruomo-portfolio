@@ -45,6 +45,8 @@ const ja = {
   "articles.zenn": "Zenn",
   "articles.qiita": "Qiita",
   "articles.empty": "記事を取得できませんでした。",
+
+  "footer.updated": "最終更新",
 } as const;
 
 export type UiKey = keyof typeof ja;
@@ -89,6 +91,8 @@ const en = {
   "articles.zenn": "Zenn",
   "articles.qiita": "Qiita",
   "articles.empty": "Could not load articles.",
+
+  "footer.updated": "Last updated",
 } satisfies Record<UiKey, string>;
 
 const ui = { ja, en };
