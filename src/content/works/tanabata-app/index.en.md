@@ -17,18 +17,23 @@ The person who creates a room is the admin. They can share the room with a QR co
 
 ## Why I Made This
 
-I wanted to run a Tanabata event as an icebreaker at my computer club's meeting, where everyone writes tanzaku on the day of Tanabata.
-I saw an article about a Tanabata event made by hand with a form tool and a design tool.
-I thought that if I turned it into one web app, I could create an experience where tanzaku get hung up in real time, right there in the room.
+My computer club happened to have a meeting on the day of Tanabata.
+That morning, I thought it would be fun to do an icebreaker, so I decided to build "an app where everyone writes tanzaku online and hangs them up together" and use it that same day.
+
+I took the idea from [an article](https://note.com/sales_wsff/n/n8ded5427462c) about a company Tanabata event, held because people had fewer chances to connect while working remotely.
+They collected wishes with a form tool (formrun) and put them together by hand in Canva.
+I thought, why not make it a real web app that works in real time?
 
 My goal was to finish it in six hours on the day, so the first version was simple: no auth and only the free tier.
 After we used it in a real meeting, we decided to open it to people outside the club, so in October 2026 I rebuilt it as v2 with stronger protection against cheating.
 
 ## Why I Chose These Technologies
 
+With only six hours, the first thing I did was decide early what I would *not* build.
+The first version had no auth, fully open Firestore rules, and limits counted only in localStorage — the smallest setup that works without auth — so I could spend my time on the experience of hanging tanzaku together.
+
 ### Next.js + TypeScript + Tailwind CSS
-I chose a setup I was used to, so I could finish in six hours.
-There are three screens — top, participant, and admin — and the room key is used directly in the URL (`/{roomId}`, `/{roomId}/admin`).
+I kept it to just three screens — top, participant, and admin — and used the room key directly in the URL (`/{roomId}`, `/{roomId}/admin`).
 
 ### Firebase (Firestore + Anonymous Auth)
 I used Firestore's `onSnapshot` to show new tanzaku in real time without writing a server.
@@ -40,6 +45,11 @@ In v2, I added Anonymous Authentication so each browser gets an ID that can't be
 ### A Tanabata look and feel
 Tanzaku text is shown vertically with `writing-mode: vertical-rl`, and you can pick a red, yellow, or blue tanzaku when you post.
 The more likes a tanzaku gets, the more it glows, so you can see popular wishes at a glance.
+
+### Nicknames that prevent impersonation
+If you could type any name each time you wrote a tanzaku, you could pretend to be someone else in the same room.
+So you enter your nickname only once, when you join a room, and you can't change it inside the room after that.
+For each post, you only choose whether to show your name. If you hide it, the tanzaku is posted as "Nanashi-san" (Anonymous).
 
 ### A "reveal" toggle to stay in the free tier
 Until the admin presses "Show to everyone," participants only subscribe to their own tanzaku.
