@@ -35,6 +35,19 @@ GitHub Actions (`.github/workflows/deploy.yml`) builds and deploys to **GitHub P
 
 The `develop` branch is used for active development; PRs merge into `main` to trigger deploy.
 
+## Versioning
+
+`package.json` `version` follows a self-defined SemVer (see issue #11). Bump once per `develop` → `main` PR, using the largest kind of change it contains:
+
+- **major** — site-wide renewal (e.g. Phase 2 Three.js, full redesign)
+- **minor** — new features or visible layout/structure changes (e.g. `/en/`, OGP, new SNS links, section order)
+- **patch** — bug fixes and small style tweaks
+- **no bump** — content-only updates (Works, articles, timeline entries, images)
+
+Steps: `npm version X.Y.Z --no-git-tag-version` on `develop` and commit (message is just the version, e.g. `2.9.0`) → merge the PR → tag the merge commit on `main` as `vX.Y.Z` and push the tag → optionally `gh release create vX.Y.Z --generate-notes`.
+
+The footer shows the last updated date from the latest commit date (`git log -1`), not the build time, so the weekly cron rebuild doesn't move it.
+
 ## Architecture
 
 ### Phase plan
