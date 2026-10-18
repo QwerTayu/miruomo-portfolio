@@ -174,4 +174,17 @@ export const timeline: TimelineEntry[] = [
     type: 'activity',
     side: 'right',
   },
+  {
+    period: '2026/09',
+    title: {
+      ja: '機械学習理論研究室 配属',
+      en: 'Joined the Theory of Machine Learning Laboratory',
+    },
+    detail: {
+      ja: '長岡技術科学大学 情報・経営システム系',
+      en: 'Department of Information and Management Systems Engineering, Nagaoka University of Technology',
+    },
+    type: 'education',
+    side: 'left',
+  },
 ];
