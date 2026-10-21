@@ -69,3 +69,16 @@ Anyone could get past them by editing the values in developer tools, and the Fir
 In v2, the poster ID is the Anonymous Auth `uid`. Post and like counters go up by one in the same transaction that creates the tanzaku, and the Firestore security rules check those values.
 To block a trick where one batch write raises the counter once but creates many tanzaku, I fixed each tanzaku's document ID to `{uid}__{counter value}`.
 I wrote tests for the rules and ran them on the Firestore emulator.
+
+### Does it need a filing under the Telecommunications Business Act?
+I had heard that even personal apps that pass messages between users may need to be filed under Japan's Telecommunications Business Act.
+So before opening the app outside the club, I tried checking the Ministry of Internal Affairs and Communications' [Telecommunications Business Entry Manual (supplement)](https://www.soumu.go.jp/main_content/000477428.pdf).
+As a result, I concluded that, in its current form, no filing seems to be needed, for two reasons.
+
+- **It isn't "operating" a business**: The manual defines "operating" as trying to profit from the service itself, through fees or ad revenue.
+  This app is free, has no ads, and is for a club icebreaker, so it doesn't qualify. The manual gives a close example: a free email service run by an individual is not "operating."
+- **It's a bulletin-board style app, so it doesn't "intermediate others' communications"**: The key question is whether the service relays messages to a specific person.
+  Tanzaku are posted to a space that anyone with the room key can see, so they fall on the same side as the manual's bulletin boards and open chats.
+
+On the other hand, charging fees, showing ads, or adding features that send messages to specific people (like one-to-one messages) could make a filing necessary, so I keep that in mind.
+This is my own reading of the manual. (I didn't get legal advice, so it may not apply to other apps.) If you think something here is wrong, I'd be grateful if you let me know.
