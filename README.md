@@ -75,7 +75,7 @@ GitHub Actions（`.github/workflows/deploy.yml`）が GitHub Pages にデプロ�
 - `main` に push したとき
 - 毎週日曜 9:00（JST）の定期実行。GitHub の言語割合を最新にするため
 
-開発は `develop` ブランチで行い、`main` への PR をマージするとデプロイされます。GitHub Actions の Secrets には、上の環境変数を3つとも登録しておきます。
+開発は `develop` ブランチで行い、`main` への PR をマージするとデプロイされます。GitHub Actions の Secrets には、上の環境変数を3つとも登録しておきます。ただし GitHub は `GITHUB_` で始まる名前の Secrets を受け付けないので、`GITHUB_LANG_TOKEN` は `LANG_STATS_TOKEN` という名前で登録します（`deploy.yml` が `GITHUB_LANG_TOKEN` に渡します）。
 
 ## バージョン
 
