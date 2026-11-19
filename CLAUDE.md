@@ -25,7 +25,7 @@ GITHUB_LANG_TOKEN=github_pat_...  # GitHub PAT for language stats (build-time on
 
 - Analytics run via **Partytown** (`type="text/partytown"`) in `src/layouts/layout.astro` — do not change this pattern.
 - `GITHUB_LANG_TOKEN` is used only in Astro frontmatter at build time and never exposed to the browser. Fine-grained PAT with Metadata: Read-only + All repositories. Do NOT prefix with `PUBLIC_`.
-- GitHub Actions Secrets must include all three: `PUBLIC_GA4_ID`, `PUBLIC_CLARITY_ID`, `GITHUB_LANG_TOKEN`.
+- GitHub Actions Secrets must include all three: `PUBLIC_GA4_ID`, `PUBLIC_CLARITY_ID`, and `LANG_STATS_TOKEN` (the value of `GITHUB_LANG_TOKEN`; GitHub rejects secret names starting with `GITHUB_`, so `deploy.yml` maps it back to `GITHUB_LANG_TOKEN`).
 
 ## Deployment
 

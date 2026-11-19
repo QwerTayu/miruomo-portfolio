@@ -5,6 +5,7 @@ on:
     branches: [ main ]
   schedule:
     - cron: '0 0 * * 0'  # 毎週日曜 00:00 UTC（日本時間 09:00）
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -36,7 +37,8 @@ jobs:
         env:
           PUBLIC_GA4_ID: ${{ secrets.PUBLIC_GA4_ID }}
           PUBLIC_CLARITY_ID: ${{ secrets.PUBLIC_CLARITY_ID }}
-          GITHUB_LANG_TOKEN: ${{ secrets.GITHUB_LANG_TOKEN }}
+          # Secrets は GITHUB_ で始まる名前を付けられないので、別の名前で登録して渡す
+          GITHUB_LANG_TOKEN: ${{ secrets.LANG_STATS_TOKEN }}
 
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
